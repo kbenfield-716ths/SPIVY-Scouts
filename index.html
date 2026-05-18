@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Troop 114 · Crew 22 — Charlottesville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root {
+  --red:   #DA2128;
+  --red-d: #A8161C;
+  --blue:  #2778AE;
+  --blue-d:#1A547A;
+  --navy:  #005596;
+
+  --paper:      #F5F1E8;
+  --paper-b:    #EDE8D8;
+  --ink:        #18181B;
+  --ink-mid:    #3F3F46;
+  --ink-soft:   #71717A;
+  --line:       #D9D3BC;
+  --line-light: #EDE8D8;
+
+  --hol-bg:  #FFF2C0;
+  --hol-bar: #D4A017;
+  --nos-bg:  #FFE4CC;
+  --nos-bar: #D97A2E;
+  --sch-bar: #005596;
+
+  --s-sm: 0 1px 3px #0003, 0 0 0 1px #0001;
+  --s-md: 0 4px 20px #0002, 0 0 0 1px #0001;
+  --s-lg: 0 20px 60px #0003, 0 2px 8px #0002;
+
+  --fd: "Nunito",        system-ui, sans-serif;
+  --fb: "Nunito Sans",   system-ui, sans-serif;
+  --r:  6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fb);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.28;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 600'><g fill='none' stroke='%23000' stroke-opacity='.07' stroke-width='.8'><path d='M-50,120 Q250,80 500,130 T1050,100'/><path d='M-50,180 Q230,145 500,188 T1050,155'/><path d='M-50,240 Q270,210 500,245 T1050,215'/><path d='M-50,300 Q240,270 500,305 T1050,280'/><path d='M-50,360 Q260,330 500,365 T1050,340'/><path d='M-50,420 Q250,395 500,425 T1050,400'/><path d='M-50,480 Q235,455 500,485 T1050,460'/><path d='M-50,540 Q255,515 500,545 T1050,520'/></g></svg>");
+  background-size: 1000px 600px;
+}
+
+/* ── APP SHELL ──────────────────────────────────────── */
+.app {
+  position: relative; z-index: 1;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 24px 28px 64px;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+header.brand {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 2px solid var(--ink);
+  position: relative;
+}
+
+.brand-mark { display: flex; align-items: center; gap: 12px; }
+.mark-compass { width: 52px; height: 52px; flex-shrink: 0; }
+.mark-text { line-height: 1; }
+.mark-eyebrow {
+  font: 900 9px/1 var(--fd);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-soft); margin-bottom: 5px;
+}
+.mark-title { font: 900 26px/1 var(--fd); letter-spacing: -.01em; }
+.mark-title .t { color: var(--red); }
+.mark-title .amp { color: var(--ink-soft); margin: 0 5px; font-weight: 700; }
+.mark-title .c { color: var(--blue); }
+.mark-sub { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+.mark-sub strong { color: var(--ink); }
+
+.year-nav { display: flex; align-items: center; gap: 8px; justify-content: center; }
+.year-nav button {
+  appearance: none; border: 0;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: white; border: 1px solid var(--line);
+  cursor: pointer; color: var(--ink-mid);
+  display: grid; place-items: center;
+  box-shadow: var(--s-sm);
+  transition: transform 100ms, box-shadow 100ms;
+}
+.year-nav button:hover { transform: translateY(-1px); box-shadow: var(--s-md); }
+.year-label {
+  font: 900 20px/1 var(--fd);
+  min-width: 210px; text-align: center; letter-spacing: -.02em;
+}
+.year-label .yr-sub { color: var(--ink-soft); font-weight: 700; font-size: 13px; margin-left: 6px; }
+
+.sub-group { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.sub-label { font: 900 9px/1 var(--fd); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.sub-row { display: flex; gap: 5px; }
+.sub-btn {
+  appearance: none;
+  padding: 7px 11px; border-radius: var(--r);
+  font: 800 10px/1 var(--fd); letter-spacing: .07em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1.5px solid var(--ink); background: white; color: var(--ink);
+  box-shadow: var(--s-sm);
+  transition: transform 100ms, box-shadow 100ms;
+}
+.sub-btn:hover { transform: translateY(-1px); box-shadow: var(--s-md); }
+.sub-btn .pip { width: 7px; height: 7px; border-radius: 50%; }
+.sub-btn.t { border-color: var(--red); color: var(--red); }
+.sub-btn.t .pip { background: var(--red); }
+.sub-btn.c { border-color: var(--blue); color: var(--blue); }
+.sub-btn.c .pip { background: var(--blue); }
+
+/* ── LAYOUT ─────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 330px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── YEAR GRID ──────────────────────────────────────── */
+.year-grid {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--s-md);
+  overflow: hidden;
+  padding: 8px 10px 14px;
+}
+.ygrid-hd {
+  font: 900 9px/1 var(--fd);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 6px 6px 8px;
+  border-bottom: 1px solid var(--line-light);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.ygrid-hd .dot { width: 8px; height: 8px; border-radius: 2px; }
+
+.months-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 14px;
+}
+
+/* ── MONTH BLOCK ────────────────────────────────────── */
+.mo-head {
+  font: 900 11px/1 var(--fd);
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 0 2px 5px;
+  border-bottom: 1.5px solid var(--ink);
+  margin-bottom: 4px;
+  display: flex; align-items: baseline; justify-content: space-between;
+}
+.mo-head .myr { font-weight: 700; color: var(--ink-soft); font-size: 9px; }
+
+.wd-row {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 2px;
+}
+.wd {
+  font: 700 8.5px/1 var(--fd);
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-soft); text-align: center; padding: 2px 0;
+}
+.wd.wknd { color: var(--red-d); opacity: .7; }
+
+.weeks { display: flex; flex-direction: column; gap: 1px; }
+
+/* Each week row is a 7-column grid for day cells, + absolutely positioned event bars */
+.week-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.d-cell {
+  position: relative;
+  text-align: right;
+  padding: 2px 3px 0 0;
+  min-height: 14px;
+}
+.d-num {
+  font: 700 9px/1 var(--fd);
+  color: var(--ink);
+  display: inline-block;
+  line-height: 1;
+}
+.d-cell.other .d-num { color: var(--ink-soft); opacity: .3; }
+.d-cell.is-today .d-num {
+  background: var(--red); color: white;
+  border-radius: 50%; width: 13px; height: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 7.5px;
+}
+.d-cell.holiday   { background: var(--hol-bg); }
+.d-cell.noschool  { background: var(--nos-bg); }
+
+.d-cell.holiday::before,
+.d-cell.noschool::before,
+.d-cell.schoolev::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+}
+.d-cell.holiday::before  { background: var(--hol-bar); }
+.d-cell.noschool::before { background: var(--nos-bar); }
+.d-cell.schoolev::before { background: var(--navy); }
+
+/* Event bars */
+.ev-bar {
+  position: absolute;
+  height: 9px;
+  border-radius: 3px;
+  cursor: pointer;
+  z-index: 3;
+  display: flex; align-items: center;
+  padding: 0 4px;
+  overflow: hidden;
+  transition: filter 100ms, transform 100ms;
+}
+.ev-bar:hover { filter: brightness(.85); transform: scaleY(1.2); z-index: 10; }
+.ev-bar.t { background: var(--red); }
+.ev-bar.c { background: var(--blue); }
+.ev-bar-lbl {
+  font: 700 7px/1 var(--fd);
+  letter-spacing: .02em;
+  color: white;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────── */
+.sidebar {
+  position: sticky; top: 20px;
+  max-height: calc(100vh - 40px);
+  display: flex; flex-direction: column; gap: 12px;
+  overflow: hidden;
+}
+.sb-eyebrow {
+  font: 900 9px/1 var(--fd);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-soft); padding-left: 2px;
+}
+.sb-scroll {
+  overflow-y: auto; flex: 1;
+  display: flex; flex-direction: column; gap: 14px;
+  padding-right: 2px;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+}
+.sb-scroll::-webkit-scrollbar { width: 6px; }
+.sb-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+.feed-sec { display: flex; flex-direction: column; gap: 6px; }
+.fs-title {
+  font: 900 12px/1 var(--fd);
+  letter-spacing: .05em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 4px;
+}
+.fs-title .sw { width: 12px; height: 12px; border-radius: 2px; }
+.feed-sec.t .fs-title { color: var(--red); }
+.feed-sec.t .fs-title .sw { background: var(--red); }
+.feed-sec.c .fs-title { color: var(--blue); }
+.feed-sec.c .fs-title .sw { background: var(--blue); }
+
+.fc {
+  appearance: none; border: 0;
+  background: white; border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px 10px 46px;
+  position: relative; text-align: left;
+  display: block; width: 100%; cursor: pointer;
+  box-shadow: var(--s-sm);
+  transition: transform 100ms, box-shadow 100ms, border-color 100ms;
+}
+.fc:hover { transform: translateY(-1px); box-shadow: var(--s-md); border-color: var(--ink); }
+.fc .badge { position: absolute; left: 8px; top: 8px; width: 30px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; text-align: center; background: white; }
+.fc .badge .bmo { font: 900 7.5px/1 var(--fd); letter-spacing: .05em; padding: 2px 0; color: white; }
+.fc.t .badge .bmo { background: var(--red); }
+.fc.c .badge .bmo { background: var(--blue); }
+.fc .badge .bdy { font: 900 14px/1.2 var(--fd); padding: 2px 0; color: var(--ink); }
+.fc .ft { font: 700 13px/1.3 var(--fb); color: var(--ink); margin-bottom: 2px; }
+.fc .fm { font-size: 11px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 2px 8px; }
+.fc .fm .ftime { font: 700 11px/1 var(--fd); }
+.fc-empty { border: 1px dashed var(--line); border-radius: 8px; padding: 14px; text-align: center; font-size: 12px; color: var(--ink-soft); font-style: italic; }
+
+/* ── MODAL ──────────────────────────────────────────── */
+.mbg {
+  position: fixed; inset: 0;
+  background: #18181bcc; backdrop-filter: blur(8px);
+  z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.mbg.open { display: flex; animation: fadeIn 180ms ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(.94) translateY(8px); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal {
+  background: var(--paper); border: 1.5px solid var(--ink); border-radius: 14px;
+  box-shadow: var(--s-lg); max-width: 520px; width: 100%;
+  max-height: calc(100vh - 48px); overflow-y: auto;
+  animation: popIn 200ms cubic-bezier(.2,.8,.3,1); position: relative;
+}
+.modal-close {
+  position: absolute; top: 14px; right: 14px; width: 30px; height: 30px;
+  border-radius: 50%; background: transparent; border: 0; cursor: pointer;
+  display: grid; place-items: center; color: var(--ink-mid); z-index: 2;
+}
+.modal-close:hover { background: var(--paper-b); }
+.mbar { height: 5px; border-radius: 14px 14px 0 0; }
+.modal.t .mbar { background: var(--red); }
+.modal.c .mbar { background: var(--blue); }
+
+.mhead { padding: 16px 22px 14px; border-bottom: 1px solid var(--line); }
+.mtag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font: 900 9px/1 var(--fd); letter-spacing: .16em; text-transform: uppercase; margin-bottom: 7px;
+}
+.modal.t .mtag { color: var(--red); }
+.modal.c .mtag { color: var(--blue); }
+.mtag .pip { width: 8px; height: 8px; border-radius: 2px; background: currentColor; }
+.mtitle { font: 900 22px/1.15 var(--fd); letter-spacing: -.01em; margin-bottom: 3px; }
+.mwhen { font-size: 13px; color: var(--ink-mid); font-weight: 600; }
+
+.mbody { padding: 14px 22px 20px; display: flex; flex-direction: column; gap: 12px; }
+.mf { display: flex; gap: 10px; align-items: flex-start; }
+.mf-lbl { font: 900 9px/1 var(--fd); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); width: 66px; flex-shrink: 0; padding-top: 2px; }
+.mf-val { font-size: 13px; color: var(--ink); line-height: 1.5; flex: 1; }
+
+.mfoot { display: flex; gap: 7px; flex-wrap: wrap; padding: 12px 22px 20px; border-top: 1px solid var(--line); }
+.mbtn {
+  appearance: none; border: 0; padding: 9px 14px; border-radius: 6px;
+  font: 800 11px/1 var(--fd); letter-spacing: .06em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: transform 100ms, box-shadow 100ms;
+}
+.mbtn:hover { transform: translateY(-1px); box-shadow: var(--s-md); }
+.modal.t .mbtn.primary { background: var(--red); color: white; }
+.modal.c .mbtn.primary { background: var(--blue); color: white; }
+.mbtn.sec { background: white; color: var(--ink); border: 1px solid var(--ink); }
+
+/* ── LEGEND ─────────────────────────────────────────── */
+.legend {
+  margin-top: 14px; padding: 11px 14px;
+  background: white; border: 1px solid var(--line); border-radius: 8px;
+  font-size: 11px; color: var(--ink-soft);
+  display: flex; gap: 16px; flex-wrap: wrap;
+  box-shadow: var(--s-sm);
+}
+.leg { display: flex; align-items: center; gap: 6px; }
+.leg .sw { width: 20px; height: 8px; border-radius: 2px; }
+.leg .st { width: 4px; height: 14px; border-radius: 2px; }
+
+/* ── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: none; }
+  .months-wrap { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .app { padding: 14px; }
+  header.brand { grid-template-columns: 1fr; gap: 12px; }
+  .months-wrap { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="brand">
+    <div class="brand-mark">
+      <svg class="mark-compass" viewBox="0 0 52 52" aria-hidden="true">
+        <circle cx="26" cy="26" r="25" fill="white" stroke="var(--ink)" stroke-width="1.6"/>
+        <g fill="none" stroke="var(--ink)" stroke-opacity=".11" stroke-width=".7">
+          <circle cx="26" cy="26" r="20"/><circle cx="26" cy="26" r="15"/><circle cx="26" cy="26" r="10"/>
+        </g>
+        <polygon points="26,6 30,26 26,26" fill="var(--red)"/>
+        <polygon points="26,46 22,26 26,26" fill="var(--ink)"/>
+        <polygon points="26,6 22,26 26,26" fill="var(--red-d)"/>
+        <polygon points="26,46 30,26 26,26" fill="var(--ink-mid)"/>
+        <circle cx="26" cy="26" r="2" fill="white" stroke="var(--ink)" stroke-width=".8"/>
+      </svg>
+      <div class="mark-text">
+        <div class="mark-eyebrow">Scouting America · Charlottesville, VA</div>
+        <div class="mark-title">
+          <span class="t">Troop 114</span><span class="amp">·</span><span class="c">Crew 22</span>
+        </div>
+        <div class="mark-sub">Committee Calendar · <strong id="py-label">2026–27 Program Year</strong></div>
+      </div>
+    </div>
+
+    <div class="year-nav">
+      <button id="prev-yr" aria-label="Previous program year">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="year-label" id="yr-label">2026–27 <span class="yr-sub">Program Year</span></div>
+      <button id="next-yr" aria-label="Next program year">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="sub-group">
+      <span class="sub-label">Subscribe · live updates</span>
+      <div class="sub-row">
+        <a class="sub-btn t" href="troop114.ics"><span class="pip"></span>Troop 114</a>
+        <a class="sub-btn c" href="crew22.ics"><span class="pip"></span>Crew 22</a>
+        <a class="sub-btn"   href="all.ics"><span class="pip" style="background:var(--ink)"></span>Both</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <section class="year-grid" aria-label="Year-at-a-glance calendar">
+      <div class="ygrid-hd">
+        <span>12-Month View</span>
+        <span class="dot" style="background:var(--red)"></span>
+        <span style="color:var(--red);font-size:9px;font-weight:900">Troop 114</span>
+        <span class="dot" style="background:var(--blue)"></span>
+        <span style="color:var(--blue);font-size:9px;font-weight:900">Crew 22</span>
+      </div>
+      <div class="months-wrap" id="months-wrap"></div>
+    </section>
+
+    <aside class="sidebar" aria-label="Upcoming events">
+      <div class="sb-eyebrow">Upcoming · Next 60 Days</div>
+      <div class="sb-scroll">
+        <section class="feed-sec t">
+          <header class="fs-title"><span class="sw"></span>Troop 114</header>
+          <div id="feed-t"></div>
+        </section>
+        <section class="feed-sec c">
+          <header class="fs-title"><span class="sw"></span>Crew 22</header>
+          <div id="feed-c"></div>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <div class="legend">
+    <span class="leg"><span class="sw" style="background:var(--red)"></span>Troop 114</span>
+    <span class="leg"><span class="sw" style="background:var(--blue)"></span>Crew 22</span>
+    <span class="leg"><span class="st" style="background:var(--hol-bar)"></span>School Holiday</span>
+    <span class="leg"><span class="st" style="background:var(--nos-bar)"></span>No School</span>
+    <span class="leg"><span class="st" style="background:var(--navy)"></span>School Milestone</span>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="mbg" id="mbg" aria-hidden="true" role="dialog">
+  <div class="modal" id="modal">
+    <div class="mbar"></div>
+    <button class="modal-close" id="modal-close" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="mhead">
+      <div class="mtag"><span class="pip"></span><span id="m-cal"></span></div>
+      <div class="mtitle" id="m-title"></div>
+      <div class="mwhen" id="m-when"></div>
+    </div>
+    <div class="mbody" id="m-body"></div>
+    <div class="mfoot" id="m-foot"></div>
+  </div>
+</div>
+
+<script>
+/* ── HELPERS ─────────────────────────────────────────── */
+const MN  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MS  = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const WDC = ['SU','MO','TU','WE','TH','FR','SA'];
+const WDL = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function iso(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function fmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function add(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function sod(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+function same(a,b){ return fmt(a)===fmt(b); }
+function ftime(hhmm){
+  if(!hhmm)return''; const[h,m]=hhmm.split(':').map(Number);
+  const p=h>=12?'pm':'am', h12=h===0?12:h>12?h-12:h;
+  return m===0?`${h12}${p}`:`${h12}:${String(m).padStart(2,'0')}${p}`;
+}
+function fdate(d){ return `${WDL[d.getDay()]}, ${MN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; }
+
+/* ── RECURRENCE EXPANSION ────────────────────────────── */
+function expand(ev, rs, re) {
+  const out=[], ex=new Set(ev.exceptDates||[]);
+  if (!ev.recurrence) {
+    const s=iso(ev.startDate), e=ev.endDate?iso(ev.endDate):s;
+    let d=new Date(s);
+    while(d<=e){ if(d>=rs&&d<=re&&!ex.has(fmt(d))) out.push({ev,date:new Date(d),allDay:!!ev.allDay}); d=add(d,1); }
+    return out;
+  }
+  const r=ev.recurrence, ss=iso(ev.startDate), se=ev.endDate?iso(ev.endDate):add(new Date,730);
+  const is=sod(rs<ss?ss:rs), ie=sod(re>se?se:re);
+  if (r.type==='weekly') {
+    const td=WDC.indexOf(r.weekday); let d=new Date(is);
+    while(d.getDay()!==td) d=add(d,1);
+    while(d<=ie){ if(!ex.has(fmt(d))) out.push({ev,date:new Date(d),allDay:false}); d=add(d,7); }
+  } else if (r.type==='nth-weekday-of-month') {
+    const td=WDC.indexOf(r.weekday);
+    let m=new Date(is.getFullYear(),is.getMonth(),1);
+    const em=new Date(ie.getFullYear(),ie.getMonth(),1);
+    while(m<=em){
+      let fh=new Date(m); while(fh.getDay()!==td) fh=add(fh,1);
+      for(const w of r.weeks){
+        const o=add(fh,(w-1)*7);
+        if(o.getMonth()!==m.getMonth()||o<ss||o>se||o<is||o>ie||ex.has(fmt(o))) continue;
+        out.push({ev,date:new Date(o),allDay:false});
+      }
+      m=new Date(m.getFullYear(),m.getMonth()+1,1);
+    }
+  }
+  return out;
+}
+
+/* ── STATE ──────────────────────────────────────────── */
+const S = { yearStart: 2026, events: [], cals: {}, hols: {} };
+
+async function load() {
+  const [ed,hd]=await Promise.all([fetch('events.json'),fetch('holidays.json')]);
+  const ev=await ed.json(), ho=await hd.json();
+  S.events=ev.events; S.cals=ev.calendars;
+  for(const h of ho.holidays) S.hols[h.date]=h;
+}
+
+/* ── SEGMENT COMPUTATION ─────────────────────────────── */
+function segments(weekDays, allOccs) {
+  const ws=weekDays[0], we=weekDays[6];
+  const byId={};
+  for(const o of allOccs){
+    if(o.date>=ws&&o.date<=we){
+      if(!byId[o.ev.id]) byId[o.ev.id]=[];
+      byId[o.ev.id].push(o);
+    }
+  }
+  const segs=[];
+  for(const [,os] of Object.entries(byId)){
+    os.sort((a,b)=>a.date-b.date);
+    segs.push({ev:os[0].ev, sc:os[0].date.getDay(), ec:os[os.length-1].date.getDay(), occ:os[0]});
+  }
+  segs.sort((a,b)=>a.sc-b.sc);
+  for(const s of segs){
+    s.row=0; let bad=true;
+    while(bad){ bad=false;
+      for(const o of segs){
+        if(o===s||o.row!==s.row) continue;
+        if(s.sc<=o.ec&&s.ec>=o.sc){bad=true;s.row++;break;}
+      }
+    }
+  }
+  return segs;
+}
+
+/* ── RENDER YEAR ────────────────────────────────────── */
+function renderYear() {
+  const ys=S.yearStart;
+  document.getElementById('yr-label').innerHTML=`${ys}–${String(ys+1).slice(-2)} <span class="yr-sub">Program Year</span>`;
+  document.getElementById('py-label').textContent=`${ys}–${ys+1} Program Year`;
+
+  const rs=new Date(ys,6,1), re=new Date(ys+1,5,30);
+  const allOccs=[];
+  for(const ev of S.events) allOccs.push(...expand(ev,rs,re));
+
+  const wrap=document.getElementById('months-wrap');
+  wrap.innerHTML='';
+  const today=sod(new Date());
+
+  for(let i=0;i<12;i++){
+    const mo=(6+i)%12;
+    const yr=mo>=6?ys:ys+1;
+
+    const block=document.createElement('div');
+    block.className='month-block';
+
+    // Header
+    const mh=document.createElement('div'); mh.className='mo-head';
+    mh.innerHTML=`<span>${MN[mo]}</span><span class="myr">${yr}</span>`;
+    block.appendChild(mh);
+
+    // Weekday row
+    const wr=document.createElement('div'); wr.className='wd-row';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach((d,i)=>{
+      const el=document.createElement('div');
+      el.className='wd'+(i===0||i===6?' wknd':'');
+      el.textContent=d; wr.appendChild(el);
+    });
+    block.appendChild(wr);
+
+    // Weeks
+    const wks=document.createElement('div'); wks.className='weeks';
+    const firstDay=new Date(yr,mo,1);
+    const lastDay=new Date(yr,mo+1,0);
+    let cursor=new Date(firstDay);
+    cursor.setDate(cursor.getDate()-cursor.getDay());
+
+    while(cursor<=lastDay){
+      const wdays=[];
+      for(let d=0;d<7;d++){wdays.push(new Date(cursor));cursor=add(cursor,1);}
+
+      const segs=segments(wdays,allOccs);
+      const maxRow=segs.length?Math.max(...segs.map(s=>s.row)):-1;
+      const rowH=14+(maxRow+1)*11;
+
+      const wrow=document.createElement('div');
+      wrow.className='week-row';
+      wrow.style.minHeight=rowH+'px';
+
+      wdays.forEach(d=>{
+        const cell=document.createElement('div'); cell.className='d-cell';
+        if(d.getMonth()!==mo) cell.classList.add('other');
+        if(same(d,today)) cell.classList.add('is-today');
+        const diso=fmt(d), hol=S.hols[diso];
+        if(hol&&d.getMonth()===mo){
+          if(hol.type==='holiday') cell.classList.add('holiday');
+          else if(hol.type==='no-school') cell.classList.add('noschool');
+          else if(hol.type==='school-event') cell.classList.add('schoolev');
+        }
+        const n=document.createElement('span'); n.className='d-num'; n.textContent=d.getDate();
+        cell.appendChild(n); wrow.appendChild(cell);
+      });
+
+      // Event bars
+      segs.forEach(seg=>{
+        const bar=document.createElement('div');
+        bar.className='ev-bar '+(seg.ev.calendar==='troop114'?'t':'c');
+        bar.style.left=`${seg.sc*100/7}%`;
+        bar.style.width=`calc(${(seg.ec-seg.sc+1)*100/7}% - 2px)`;
+        bar.style.top=`${14+seg.row*11}px`;
+        const lbl=document.createElement('span'); lbl.className='ev-bar-lbl'; lbl.textContent=seg.ev.title;
+        bar.appendChild(lbl);
+        bar.addEventListener('click',e=>{e.stopPropagation();openModal(seg.occ);});
+        bar.title=seg.ev.title;
+        wrow.appendChild(bar);
+      });
+
+      wks.appendChild(wrow);
+    }
+    block.appendChild(wks);
+    wrap.appendChild(block);
+  }
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────── */
+function renderSidebar(){
+  const today=sod(new Date()), end=add(today,60);
+  const all=[];
+  for(const ev of S.events) all.push(...expand(ev,today,end));
+  all.sort((a,b)=>a.date-b.date);
+  const tr=all.filter(o=>o.ev.calendar==='troop114');
+  const cr=all.filter(o=>o.ev.calendar==='crew22');
+
+  function rFeed(id,occs,cls){
+    const el=document.getElementById(id); el.innerHTML='';
+    if(!occs.length){el.innerHTML='<div class="fc-empty">No events in the next 60 days.</div>';return;}
+    for(const o of occs){
+      const c=document.createElement('button'); c.className=`fc ${cls}`; c.type='button';
+      c.innerHTML=`<div class="badge"><div class="bmo">${MS[o.date.getMonth()]}</div><div class="bdy">${o.date.getDate()}</div></div>
+        <div class="ft"></div>
+        <div class="fm">${o.allDay?'<span class="ftime">All day</span>':(o.ev.startTime?`<span class="ftime">${ftime(o.ev.startTime)}</span>`:'')}</div>`;
+      c.querySelector('.ft').textContent=o.ev.title;
+      if(o.ev.location){
+        const loc=document.createElement('span'); loc.textContent=o.ev.location;
+        c.querySelector('.fm').appendChild(loc);
+      }
+      c.addEventListener('click',()=>openModal(o));
+      el.appendChild(c);
+    }
+  }
+  rFeed('feed-t',tr,'t');
+  rFeed('feed-c',cr,'c');
+}
+
+/* ── MODAL ──────────────────────────────────────────── */
+function openModal(occ){
+  const ev=occ.ev, modal=document.getElementById('modal'), bg=document.getElementById('mbg');
+  modal.className='modal '+(ev.calendar==='troop114'?'t':'c');
+  document.getElementById('m-cal').textContent=S.cals[ev.calendar].name;
+  document.getElementById('m-title').textContent=ev.title;
+  let when=ev.endDate&&ev.startDate!==ev.endDate
+    ?`${fdate(iso(ev.startDate))} → ${fdate(iso(ev.endDate))}`
+    :fdate(occ.date)+(occ.allDay?' · All day':ev.startTime?` · ${ftime(ev.startTime)}${ev.endTime?' – '+ftime(ev.endTime):''}':'');
+  document.getElementById('m-when').textContent=when;
+
+  const body=document.getElementById('m-body'); body.innerHTML='';
+  if(ev.location)    body.appendChild(mkf('Location',ev.location));
+  if(ev.description) body.appendChild(mkf('Details',ev.description));
+  if(ev.recurrence)  body.appendChild(mkf('Repeats',descR(ev.recurrence)));
+
+  const foot=document.getElementById('m-foot'); foot.innerHTML='';
+  if(ev.link){
+    const a=document.createElement('a'); a.className='mbtn primary';
+    a.href=ev.link; a.target='_blank'; a.rel='noopener';
+    a.innerHTML='Info &amp; Sign-Up <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><polyline points="7 7 17 7 17 17"/></svg>';
+    foot.appendChild(a);
+  }
+  const dl=document.createElement('button'); dl.className='mbtn sec'; dl.type='button';
+  dl.textContent='Add to my calendar';
+  dl.addEventListener('click',()=>dlICS(occ));
+  foot.appendChild(dl);
+
+  bg.classList.add('open'); bg.setAttribute('aria-hidden','false');
+}
+function closeModal(){ const bg=document.getElementById('mbg'); bg.classList.remove('open'); bg.setAttribute('aria-hidden','true'); }
+function mkf(label,value){
+  const w=document.createElement('div'); w.className='mf';
+  const l=document.createElement('div'); l.className='mf-lbl'; l.textContent=label;
+  const v=document.createElement('div'); v.className='mf-val'; v.textContent=value;
+  w.appendChild(l); w.appendChild(v); return w;
+}
+function descR(r){
+  const dm={SU:'Sundays',MO:'Mondays',TU:'Tuesdays',WE:'Wednesdays',TH:'Thursdays',FR:'Fridays',SA:'Saturdays'};
+  const ord={1:'1st',2:'2nd',3:'3rd',4:'4th',5:'5th'};
+  if(r.type==='weekly') return `Every week on ${dm[r.weekday]}`;
+  if(r.type==='nth-weekday-of-month') return `${r.weeks.map(w=>ord[w]).join(' and ')} ${dm[r.weekday]} of each month`;
+  return 'Recurring';
+}
+
+/* ── ICS DOWNLOAD (single event) ────────────────────── */
+function dlICS(occ){
+  const ev=occ.ev,d=occ.date;
+  const dt=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0');
+  const stamp=new Date().toISOString().replace(/[-:.]/g,'').slice(0,15)+'Z';
+  const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Troop114-Crew22//Scout Calendar//EN',
+    'CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
+    `UID:${ev.id}-${dt(d)}@troop114crew22`,`DTSTAMP:${stamp}`,`SUMMARY:${esc(ev.title)}`];
+  if(occ.allDay){
+    lines.push(`DTSTART;VALUE=DATE:${dt(d)}`,`DTEND;VALUE=DATE:${dt(add(d,1))}`);
+  } else {
+    const hm=(t,hhmm)=>{const[h,m]=hhmm.split(':').map(Number);const x=new Date(t);x.setHours(h,m,0);return dt(x)+'T'+String(h).padStart(2,'0')+String(m).padStart(2,'0')+'00';};
+    lines.push(`DTSTART:${hm(d,ev.startTime||'19:00')}`,`DTEND:${hm(d,ev.endTime||ev.startTime||'20:00')}`);
+  }
+  if(ev.location)    lines.push(`LOCATION:${esc(ev.location)}`);
+  if(ev.description) lines.push(`DESCRIPTION:${esc(ev.description)}`);
+  if(ev.link)        lines.push(`URL:${ev.link}`);
+  lines.push('END:VEVENT','END:VCALENDAR');
+  const blob=new Blob([lines.join('\r\n')],{type:'text/calendar'});
+  const url=URL.createObjectURL(blob);
+  Object.assign(document.createElement('a'),{href:url,download:`${ev.id}.ics`}).click();
+  URL.revokeObjectURL(url);
+}
+
+/* ── WIRING ─────────────────────────────────────────── */
+document.getElementById('prev-yr').addEventListener('click',()=>{S.yearStart--;renderYear();renderSidebar();});
+document.getElementById('next-yr').addEventListener('click',()=>{S.yearStart++;renderYear();renderSidebar();});
+document.getElementById('modal-close').addEventListener('click',closeModal);
+document.getElementById('mbg').addEventListener('click',e=>{if(e.target.id==='mbg')closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ── BOOT ────────────────────────────────────────────── */
+(async()=>{ await load(); renderYear(); renderSidebar(); })();
+</script>
+</body>
+</html>

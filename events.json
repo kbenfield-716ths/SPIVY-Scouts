@@ -1,0 +1,156 @@
+{
+  "$schema_help": "See README.md for the full data model. Edit this file to add/change events; commit, and the GitHub Action regenerates the .ics files.",
+  "calendars": {
+    "troop114": {
+      "name": "Troop 114",
+      "shortName": "Troop",
+      "color": "#DA2128",
+      "icsFilename": "troop114.ics",
+      "description": "Scouts BSA Troop 114, Charlottesville, VA"
+    },
+    "crew22": {
+      "name": "Crew 22",
+      "shortName": "Crew",
+      "color": "#2778AE",
+      "icsFilename": "crew22.ics",
+      "description": "Venturing Crew 22, Charlottesville, VA"
+    }
+  },
+  "events": [
+    {
+      "id": "t114-weekly-meeting",
+      "calendar": "troop114",
+      "title": "Troop Meeting",
+      "location": "St. Paul's Memorial Church",
+      "startTime": "19:00",
+      "endTime": "20:30",
+      "description": "Weekly troop meeting. Class A uniform.",
+      "link": "https://troop114cville.org/meetings",
+      "recurrence": {
+        "type": "weekly",
+        "weekday": "MO"
+      },
+      "startDate": "2026-08-17",
+      "endDate": "2027-05-24",
+      "exceptDates": [
+        "2026-09-07",
+        "2026-11-23",
+        "2026-12-21",
+        "2026-12-28",
+        "2027-01-18",
+        "2027-04-05"
+      ]
+    },
+    {
+      "id": "t114-plc",
+      "calendar": "troop114",
+      "title": "Patrol Leaders' Council (PLC)",
+      "location": "St. Paul's Memorial Church",
+      "startTime": "18:30",
+      "endTime": "19:00",
+      "description": "Youth-led planning meeting before troop meeting. SPL, ASPLs, PLs, scribe.",
+      "link": "https://troop114cville.org/plc",
+      "recurrence": {
+        "type": "nth-weekday-of-month",
+        "weekday": "MO",
+        "weeks": [1]
+      },
+      "startDate": "2026-09-01",
+      "endDate": "2027-05-31"
+    },
+    {
+      "id": "t114-camp-fall-2026",
+      "calendar": "troop114",
+      "title": "Fall Campout — Sherando Lake",
+      "location": "Sherando Lake Recreation Area, GWNF",
+      "startDate": "2026-10-16",
+      "endDate": "2026-10-18",
+      "allDay": true,
+      "description": "Fall campout. Patrol cooking. Hike to White Rock Falls. Departure Friday 6pm from St. Paul's; return Sunday by 11am.",
+      "link": "https://troop114cville.org/campouts/sherando-2026"
+    },
+    {
+      "id": "t114-coh-winter",
+      "calendar": "troop114",
+      "title": "Court of Honor",
+      "location": "St. Paul's Memorial Church",
+      "startDate": "2026-12-14",
+      "startTime": "18:30",
+      "endTime": "20:00",
+      "description": "Winter Court of Honor. Recognition of rank advancements, merit badges, and special awards. Families welcome — light reception following.",
+      "link": "https://troop114cville.org/coh"
+    },
+    {
+      "id": "t114-summer-camp-2027",
+      "calendar": "troop114",
+      "title": "Summer Camp — Camp Shenandoah",
+      "location": "Camp Shenandoah, Swoope, VA",
+      "startDate": "2027-07-11",
+      "endDate": "2027-07-17",
+      "allDay": true,
+      "description": "Long-term summer camp. Merit badges, advancement, COPE, aquatics. $475/scout — deposit due April 1.",
+      "link": "https://troop114cville.org/summer-camp"
+    },
+    {
+      "id": "c22-meeting-1st-3rd",
+      "calendar": "crew22",
+      "title": "Crew Meeting",
+      "location": "St. Paul's Memorial Church (Parlor)",
+      "startTime": "19:00",
+      "endTime": "20:30",
+      "description": "Bi-weekly crew meeting — planning, training, ALPS framework activities.",
+      "link": "https://crew22cville.org/meetings",
+      "recurrence": {
+        "type": "nth-weekday-of-month",
+        "weekday": "WE",
+        "weeks": [1, 3]
+      },
+      "startDate": "2026-09-01",
+      "endDate": "2027-05-31",
+      "exceptDates": ["2026-11-25", "2026-12-23"]
+    },
+    {
+      "id": "c22-rock-climb-fall",
+      "calendar": "crew22",
+      "title": "Climbing Day — Old Rag",
+      "location": "Old Rag Mountain, SNP",
+      "startDate": "2026-10-24",
+      "allDay": true,
+      "description": "Day climb at Old Rag. Bring 2L water, lunch, layers. Carpool from St. Paul's at 6am.",
+      "link": "https://crew22cville.org/climbing-day"
+    },
+    {
+      "id": "c22-backpack-bryce",
+      "calendar": "crew22",
+      "title": "Backpacking — Three Ridges Loop",
+      "location": "Three Ridges Wilderness, GWNF",
+      "startDate": "2026-11-13",
+      "endDate": "2026-11-15",
+      "allDay": true,
+      "description": "Two-night backpacking trip. AT section. Pre-trip shakedown Nov 4 meeting.",
+      "link": "https://crew22cville.org/backpacking"
+    },
+    {
+      "id": "c22-ski-2027",
+      "calendar": "crew22",
+      "title": "Ski Trip — Wintergreen",
+      "location": "Wintergreen Resort",
+      "startDate": "2027-02-06",
+      "startTime": "08:00",
+      "endTime": "20:00",
+      "description": "Day ski/snowboard trip. Rentals available. $95 lift + transport.",
+      "link": "https://crew22cville.org/ski"
+    },
+    {
+      "id": "both-jamboree-2026",
+      "calendar": "troop114",
+      "title": "🏕️ 2026 National Scout Jamboree",
+      "location": "Summit Bechtel Reserve, WV",
+      "startDate": "2026-07-22",
+      "endDate": "2026-07-31",
+      "allDay": true,
+      "description": "Elevate — 2026 National Scout Jamboree. VAHC contingent. Pre-departure shakedown TBD.",
+      "link": "https://summit.scouting.org/national-scout-jamboree/"
+    }
+  ]
+}

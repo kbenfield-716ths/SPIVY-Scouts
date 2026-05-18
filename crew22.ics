@@ -1,0 +1,56 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Troop114 & Crew 22//Scout Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Crew 22
+X-WR-TIMEZONE:America/New_York
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:c22-meeting-1st-3rd@troop114crew22.github.io
+DTSTAMP:20260518T181134Z
+SUMMARY:Crew Meeting
+DTSTART:20260901T190000
+DTEND:20260901T203000
+RRULE:FREQ=MONTHLY;BYDAY=1WE,3WE;UNTIL=20270531T235959
+EXDATE:20261125T190000,20261223T190000
+LOCATION:St. Paul's Memorial Church (Parlor)
+DESCRIPTION:Bi-weekly crew meeting — planning\, training\, ALPS framework
+  activities.
+URL:https://crew22cville.org/meetings
+END:VEVENT
+BEGIN:VEVENT
+UID:c22-rock-climb-fall@troop114crew22.github.io
+DTSTAMP:20260518T181134Z
+SUMMARY:Climbing Day — Old Rag
+DTSTART;VALUE=DATE:20261024
+DTEND;VALUE=DATE:20261025
+LOCATION:Old Rag Mountain\, SNP
+DESCRIPTION:Day climb at Old Rag. Bring 2L water\, lunch\, layers. Carpoo
+ l from St. Paul's at 6am.
+URL:https://crew22cville.org/climbing-day
+END:VEVENT
+BEGIN:VEVENT
+UID:c22-backpack-bryce@troop114crew22.github.io
+DTSTAMP:20260518T181134Z
+SUMMARY:Backpacking — Three Ridges Loop
+DTSTART;VALUE=DATE:20261113
+DTEND;VALUE=DATE:20261116
+LOCATION:Three Ridges Wilderness\, GWNF
+DESCRIPTION:Two-night backpacking trip. AT section. Pre-trip shakedown No
+ v 4 meeting.
+URL:https://crew22cville.org/backpacking
+END:VEVENT
+BEGIN:VEVENT
+UID:c22-ski-2027@troop114crew22.github.io
+DTSTAMP:20260518T181134Z
+SUMMARY:Ski Trip — Wintergreen
+DTSTART:20270206T080000
+DTEND:20270206T200000
+LOCATION:Wintergreen Resort
+DESCRIPTION:Day ski/snowboard trip. Rentals available. $95 lift + transpo
+ rt.
+URL:https://crew22cville.org/ski
+END:VEVENT
+END:VCALENDAR
