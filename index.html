@@ -210,6 +210,12 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 .mdl.t .mb.pri{background:var(--red);color:white;}.mdl.c .mb.pri{background:var(--blue);color:white;}
 .mb.sec{background:white;color:var(--ink);border:1px solid var(--line);}
 .mb.del{background:white;color:#c00;border:1px solid #c00;}
+.mnotes{padding:4px 18px 12px;border-top:1px solid var(--line);}
+.mnotes textarea{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:6px;
+  font:600 12px/1.5 var(--fb);color:var(--ink);resize:vertical;min-height:68px;
+  background:#FAFAF8;transition:border-color 100ms;}
+.mnotes textarea:focus{outline:none;border-color:var(--ink);background:white;}
+.mfl{font:900 8px/1 var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);width:58px;flex-shrink:0;padding-top:2px;}
 
 /* ── EDITOR MODAL ── */
 .ebg{position:fixed;inset:0;background:#0009;backdrop-filter:blur(6px);z-index:300;
@@ -356,6 +362,10 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
       <div class="mwhen" id="m-when"></div>
     </div>
     <div class="mbdy" id="m-body"></div>
+    <div class="mnotes">
+      <label class="mfl" for="m-notes" style="display:block;margin-bottom:5px">PRIVATE NOTES</label>
+      <textarea id="m-notes" placeholder="Add private notes about this event…" rows="3"></textarea>
+    </div>
     <div class="mft" id="m-foot"></div>
   </div>
 </div>
@@ -465,7 +475,7 @@ function loadData(){
   var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
   var del=new Set(JSON.parse(localStorage.getItem('sc_del')||'[]'));
   S.events=BASE.events.filter(function(e){return !del.has(e.id);}).concat(ue);
-  S.cals=BASE.calendars;
+  S.cals=Object.assign({school:{name:'ACPS School Calendar',color:'#16A34A'}},BASE.calendars);
   S.hols={};
   for(var i=0;i<HOLS.length;i++)S.hols[HOLS[i].date]=HOLS[i];
 }
@@ -536,6 +546,10 @@ function renderYear(){
   var maxEndCol=0;
   for(var mi=0;mi<12;mi++) maxEndCol=Math.max(maxEndCol,moMeta[mi].startDow+moMeta[mi].dim-1);
   var NC=Math.ceil((maxEndCol+1)/7)*7;
+  // Fill available width — recomputed each render + on resize
+  var _outerEl=document.getElementById('cal-outer');
+  var _availW=(_outerEl&&_outerEl.clientWidth>200)?_outerEl.clientWidth:(Math.min(window.innerWidth,1800)-44);
+  var CW=Math.max(22,Math.floor((_availW-MOW)/NC));
 
   var rs=new Date(ys,6,1),re=new Date(ys+1,5,30),allOccs=[];
   for(var i=0;i<S.events.length;i++) allOccs=allOccs.concat(expand(S.events[i],rs,re));
@@ -684,9 +698,7 @@ function renderYear(){
       lbl2.textContent=seg.ev.title;
       bar.appendChild(lbl2);
       bar.title=seg.ev.title;
-      if(cal!=='school'){
-        (function(occ){bar.addEventListener('click',function(e){e.stopPropagation();openDet(occ);});})(seg.occ);
-      }
+      (function(occ){bar.addEventListener('click',function(e){e.stopPropagation();openDet(occ);});})(seg.occ);
       grid.appendChild(bar);
     });
     rowTopAccum+=rowH;
@@ -790,6 +802,11 @@ function openDet(occ){
   ed.addEventListener('click',function(){closeDet();openEd(ev);});foot.appendChild(ed);
   var delbtn=mk('button','mb del');delbtn.type='button';delbtn.textContent='Delete';
   delbtn.addEventListener('click',function(){if(confirm('Delete "'+ev.title+'"?'))delEv(ev.id);});foot.appendChild(delbtn);
+  // Notes
+  var _notes=JSON.parse(localStorage.getItem('sc_notes')||'{}');
+  var _notesEl=document.getElementById('m-notes');
+  _notesEl.value=_notes[ev.id]||'';
+  _notesEl._evId=ev.id;
   bg.classList.add('open');bg.setAttribute('aria-hidden','false');
 }
 function closeDet(){document.getElementById('mbg').classList.remove('open');document.getElementById('mbg').setAttribute('aria-hidden','true');}
@@ -922,6 +939,13 @@ document.getElementById('next-yr').addEventListener('click',function(){S.yr++;re
 document.getElementById('add-btn').addEventListener('click',function(){openEd(null);});
 document.getElementById('exp-btn').addEventListener('click',exportJSON);
 document.getElementById('mclose').addEventListener('click',closeDet);
+document.getElementById('m-notes').addEventListener('blur',function(){
+  var notes=JSON.parse(localStorage.getItem('sc_notes')||'{}');
+  var v=this.value.trim();
+  if(v) notes[this._evId]=this.value; else delete notes[this._evId];
+  localStorage.setItem('sc_notes',JSON.stringify(notes));
+  if(v) toast('Note saved');
+});
 document.getElementById('mbg').addEventListener('click',function(e){if(e.target.id==='mbg')closeDet();});
 document.getElementById('ecls').addEventListener('click',closeEd);
 document.getElementById('e-can').addEventListener('click',closeEd);
@@ -947,6 +971,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDet();
 loadData();
 renderYear();
 renderSidebar();
+// Re-render on resize so CW stays fitted to the screen
+var _rzTimer;
+window.addEventListener('resize',function(){clearTimeout(_rzTimer);_rzTimer=setTimeout(renderYear,180);});
 </script>
 </body>
 </html>
