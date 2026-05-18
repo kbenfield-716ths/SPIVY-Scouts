@@ -157,13 +157,14 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 .fst .sw{width:10px;height:10px;border-radius:2px;}
 .fsec.t .fst{color:var(--red);}.fsec.t .fst .sw{background:var(--red);}
 .fsec.c .fst{color:var(--blue);}.fsec.c .fst .sw{background:var(--blue);}
+.fsec.s .fst{color:#16A34A;}.fsec.s .fst .sw{background:#16A34A;}
 .fc{appearance:none;border:0;background:white;border:1px solid var(--line);border-radius:7px;
   padding:9px 10px 9px 44px;position:relative;text-align:left;display:block;width:100%;cursor:pointer;
   box-shadow:var(--s-sm);transition:transform 80ms,border-color 80ms;}
 .fc:hover{transform:translateY(-1px);border-color:var(--ink);}
 .fc .bdg{position:absolute;left:7px;top:7px;width:28px;border:1px solid var(--line);border-radius:4px;overflow:hidden;text-align:center;background:white;}
 .fc .bmo{font:900 7px/1 var(--fd);padding:2px 0;color:white;}
-.fc.t .bmo{background:var(--red);}.fc.c .bmo{background:var(--blue);}
+.fc.t .bmo{background:var(--red);}.fc.c .bmo{background:var(--blue);}.fc.s .bmo{background:#16A34A;}
 .fc .bdy{font:900 13px/1.2 var(--fd);padding:2px 0;color:var(--ink);}
 .fc .ftt{font:700 12px/1.3 var(--fb);color:var(--ink);margin-bottom:1px;}
 .fc .fmt{font-size:10.5px;color:var(--ink-soft);}
@@ -323,6 +324,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
           <div class="sb-sc">
             <section class="fsec t"><header class="fst"><span class="sw"></span>Troop 114</header><div id="feed-t"></div></section>
             <section class="fsec c"><header class="fst"><span class="sw"></span>Crew 22</header><div id="feed-c"></div></section>
+            <section class="fsec s"><header class="fst"><span class="sw"></span>ACPS School Calendar</header><div id="feed-s"></div></section>
           </div>
         </div>
       </aside>
@@ -335,6 +337,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
     <span class="leg"><span class="sq" style="background:var(--hol);border-color:#D4A017"></span>School Holiday</span>
     <span class="leg"><span class="sq" style="background:var(--nos);border-color:#D97A2E"></span>No School</span>
     <span class="leg"><span class="sq" style="background:var(--sch);border-color:#2778AE"></span>School Event</span>
+    <span class="leg"><span class="swatch" style="background:#16A34A"></span>ACPS Calendar</span>
     <span class="leg"><span class="sq" style="background:var(--cell-wknd)"></span>Weekend</span>
     <span class="leg"><span class="sq" style="background:var(--ink);border-color:var(--ink)"></span>Today</span>
   </div>
@@ -524,49 +527,58 @@ function renderYear(){
   document.getElementById('yr-lbl').innerHTML=ys+'\u20133'+(ys+1).toString().slice(-2)+' <small>Program Year</small>';
   document.getElementById('py-lbl').textContent=ys+'\u2013'+(ys+1)+' Program Year';
 
-  // Per-month metadata: each month positioned by its own start-weekday offset
   var moMeta=[];
   for(var mi=0;mi<12;mi++){
     var mo=(6+mi)%12,yr2=mo>=6?ys:ys+1;
     var firstDay=new Date(yr2,mo,1);
-    var startDow=firstDay.getDay();              // 0=Sun…6=Sat
-    var dim=new Date(yr2,mo+1,0).getDate();      // days in month
-    moMeta.push({mo:mo,yr2:yr2,startDow:startDow,dim:dim});
+    moMeta.push({mo:mo,yr2:yr2,startDow:firstDay.getDay(),dim:new Date(yr2,mo+1,0).getDate()});
   }
-
-  // Grid column count = smallest multiple of 7 that fits every month
   var maxEndCol=0;
   for(var mi=0;mi<12;mi++) maxEndCol=Math.max(maxEndCol,moMeta[mi].startDow+moMeta[mi].dim-1);
-  var NC=Math.ceil((maxEndCol+1)/7)*7;   // e.g. 42 for 2026-27
+  var NC=Math.ceil((maxEndCol+1)/7)*7;
 
-  // Expand events and compute per-month segments
   var rs=new Date(ys,6,1),re=new Date(ys+1,5,30),allOccs=[];
   for(var i=0;i<S.events.length;i++) allOccs=allOccs.concat(expand(S.events[i],rs,re));
 
   for(var mi=0;mi<12;mi++){
     var md=moMeta[mi];
+    // ── Scout event segs ──
     var moOccs=allOccs.filter(function(o){return o.date.getMonth()===md.mo&&o.date.getFullYear()===md.yr2;});
     var byId={};
     moOccs.forEach(function(o){(byId[o.ev.id]=byId[o.ev.id]||[]).push(o);});
-
     var segs=[];
     Object.keys(byId).forEach(function(id){
       var os=byId[id].sort(function(a,b){return a.date-b.date;});
-      // Check if all occurrences are consecutive days (multi-day event vs recurring)
       var cont=true;
       for(var k=1;k<os.length;k++) if(Math.round((os[k].date-os[k-1].date)/86400000)!==1){cont=false;break;}
       if(cont){
-        segs.push({ev:os[0].ev,
-          sc:md.startDow+os[0].date.getDate()-1,
-          ec:md.startDow+os[os.length-1].date.getDate()-1,
-          occ:os[0]});
+        segs.push({ev:os[0].ev,sc:md.startDow+os[0].date.getDate()-1,ec:md.startDow+os[os.length-1].date.getDate()-1,occ:os[0]});
       } else {
-        os.forEach(function(o){
-          var col=md.startDow+o.date.getDate()-1;
-          segs.push({ev:o.ev,sc:col,ec:col,occ:o});
-        });
+        os.forEach(function(o){var c=md.startDow+o.date.getDate()-1;segs.push({ev:o.ev,sc:c,ec:c,occ:o});});
       }
     });
+    // ── School calendar segs from HOLS ──
+    var holDates=Object.keys(S.hols).filter(function(k){
+      var d=di(k);return d.getMonth()===md.mo&&d.getFullYear()===md.yr2;
+    }).sort();
+    var groups=[];
+    holDates.forEach(function(k){
+      var d=di(k),tp=S.hols[k].type;
+      if(!groups.length||Math.round((d-groups[groups.length-1].end)/86400000)>1){
+        groups.push({start:d,end:d,type:tp});
+      } else { groups[groups.length-1].end=d; }
+    });
+    groups.forEach(function(g){
+      var label=g.type==='holiday'?'Holiday':g.type==='no-school'?'No School':'School Event';
+      if(Math.round((g.end-g.start)/86400000)>1) label+=' Break';
+      segs.push({
+        ev:{id:'sch-'+df(g.start),calendar:'school',title:label},
+        sc:md.startDow+g.start.getDate()-1,
+        ec:md.startDow+g.end.getDate()-1,
+        occ:{ev:{id:'sch-'+df(g.start),calendar:'school',title:label,allDay:true},date:g.start,allDay:true}
+      });
+    });
+    // ── Assign stacking rows ──
     segs.sort(function(a,b){return a.sc-b.sc;});
     segs.forEach(function(s){
       s.row=0;var bad=true;
@@ -577,26 +589,24 @@ function renderYear(){
     });
     var maxRow=segs.length?Math.max.apply(null,segs.map(function(s){return s.row;})):-1;
     md.segs=segs;
-    md.rowH=CH+(maxRow+1)*EVH+4;
+    // Row height: bars live WITHIN the date cells (crossing over them).
+    // Pack up to 3 bars inside CH. If more, expand downward.
+    md.rowH=maxRow<3?CH:CH+(maxRow-2)*(EVH+1);
   }
 
-  // Build flat CSS grid
   var rowTmpl=HDRH+'px '+moMeta.map(function(m){return m.rowH+'px';}).join(' ');
   var totalW=MOW+NC*CW;
-
   var grid=document.getElementById('cal-grid');
   grid.innerHTML='';
   grid.style.cssText='display:grid;'+
     'grid-template-columns:'+MOW+'px repeat('+NC+','+CW+'px);'+
-    'grid-template-rows:'+rowTmpl+';'+
-    'width:'+totalW+'px;position:relative;';
+    'grid-template-rows:'+rowTmpl+';width:'+totalW+'px;position:relative;';
   document.getElementById('cal-inner').style.width=totalW+'px';
 
   var today=ds(new Date());
-  var BDR='2px solid #E7E5DF';
-  var BDB='5px solid #E7E5DF';
+  var BDR='2px solid #E7E5DF',BDB='5px solid #E7E5DF';
 
-  // ── HEADER ROW ──
+  // Header
   var corner=mk('div');
   corner.style.cssText='height:'+HDRH+'px;background:#E7E5DF;position:sticky;left:0;z-index:22;border-right:'+BDR+';border-bottom:'+BDR+';';
   grid.appendChild(corner);
@@ -605,90 +615,87 @@ function renderYear(){
     var hc=mk('div');
     hc.style.cssText='height:'+HDRH+'px;display:flex;align-items:center;justify-content:center;'+
       'font:700 8px/1 var(--fd);color:#A1A1AA;letter-spacing:.04em;'+
-      'background:'+(isW?'#EDEAE5':'white')+';'+
-      'border-right:'+BDR+';border-bottom:'+BDR+';';
+      'background:'+(isW?'#EDEAE5':'white')+';border-right:'+BDR+';border-bottom:'+BDR+';';
     hc.textContent=WDA[dow];
     grid.appendChild(hc);
   }
 
-  // ── MONTH ROWS ──
   var rowTopAccum=HDRH;
   for(var mi=0;mi<12;mi++){
     var md=moMeta[mi];
     var rowH=md.rowH;
-
-    // Label cell (sticky)
+    // Label
     var lbl=mk('div');
-    lbl.style.cssText='height:'+rowH+'px;background:#E7E5DF;'+
-      'position:sticky;left:0;z-index:10;display:flex;align-items:center;justify-content:center;'+
+    lbl.style.cssText='height:'+rowH+'px;background:#E7E5DF;position:sticky;left:0;z-index:10;'+
+      'display:flex;align-items:flex-start;justify-content:center;padding-top:4px;'+
       'border-right:'+BDR+';border-bottom:'+BDR+';';
     var sp=mk('span');
     sp.style.cssText='font:900 11px/1 var(--fd);letter-spacing:.1em;text-transform:uppercase;color:#52525B;';
     sp.textContent=MNS[md.mo];
     lbl.appendChild(sp);
     grid.appendChild(lbl);
-
-    // Leading empty cells (days before month starts)
+    // Leading empty
     for(var c=0;c<md.startDow;c++){
       var em=mk('div');
       em.style.cssText='height:'+CH+'px;background:#E7E5DF;border-right:'+BDR+';border-bottom:'+BDB+';';
       grid.appendChild(em);
     }
-
     // Date cells
     for(var d=1;d<=md.dim;d++){
       var date=new Date(md.yr2,md.mo,d);
-      var dow=date.getDay(),isW=dow===0||dow===6;
-      var isToday=deq(date,today);
+      var dow=date.getDay(),isW=dow===0||dow===6,isToday=deq(date,today);
       var hol=S.hols[df(date)];
-      var bg=isToday?'#18181B':
-               (hol&&hol.type==='holiday')?'#FFF3A8':
-               (hol&&hol.type==='no-school')?'#FFE2C0':
-               (hol&&hol.type==='school-event')?'#D6E8FF':
-               isW?'#EDEAE5':'white';
+      var bg=isToday?'#18181B':(hol&&hol.type==='holiday')?'#FFF3A8':(hol&&hol.type==='no-school')?'#FFE2C0':(hol&&hol.type==='school-event')?'#D6E8FF':isW?'#EDEAE5':'white';
       var dc=mk('div');
-      dc.style.cssText='height:'+CH+'px;background:'+bg+';border-right:'+BDR+';border-bottom:'+BDB+';position:relative;';
+      dc.style.cssText='height:'+CH+'px;background:'+bg+';border-right:'+BDR+';border-bottom:'+BDB+';position:relative;overflow:visible;';
       var dn=mk('span');
-      dn.style.cssText='position:absolute;top:3px;left:4px;font:700 9px/1 var(--fd);color:'+(isToday?'white':'#52525B')+';';
+      // Date numbers float above event bars with a white backing so they stay readable
+      dn.style.cssText='position:absolute;top:3px;left:3px;font:700 9px/1 var(--fd);color:'+(isToday?'white':'#52525B')+';'+
+        'background:'+(isToday?'transparent':'rgba(255,255,255,.85)')+';border-radius:2px;padding:1px 2px;z-index:3;pointer-events:none;';
       dn.textContent=p2(d);
       dc.appendChild(dn);
       grid.appendChild(dc);
     }
-
-    // Trailing empty cells
+    // Trailing empty
     for(var c=md.startDow+md.dim;c<NC;c++){
       var em=mk('div');
       em.style.cssText='height:'+CH+'px;background:#E7E5DF;border-right:'+BDR+';border-bottom:'+BDB+';';
       grid.appendChild(em);
     }
-
-    // Event bars (absolutely positioned in grid, which is position:relative)
+    // Event bars — cross over the date cells from the bottom up
     md.segs.forEach(function(seg){
+      var cal=seg.ev.calendar;
+      var color=cal==='troop114'?'#DA2128':cal==='crew22'?'#2778AE':'#16A34A';
+      // Row 0 = bottom of CH area, row 1 above it, etc.
+      // If row >= 3 (expanded zone), bars sit below CH
+      var barTop=seg.row<3
+        ? rowTopAccum+CH-(seg.row+1)*(EVH+1)   // within the date cell
+        : rowTopAccum+CH+(seg.row-2)*(EVH+1);   // expanding below
       var bar=mk('div');
       bar.style.cssText='position:absolute;'+
         'left:'+(MOW+seg.sc*CW)+'px;'+
-        'top:'+(rowTopAccum+CH+2+seg.row*(EVH+1))+'px;'+
+        'top:'+barTop+'px;'+
         'width:'+((seg.ec-seg.sc+1)*CW-2)+'px;'+
-        'height:'+EVH+'px;'+
-        'border-radius:2px;overflow:hidden;background:'+(seg.ev.calendar==='troop114'?'#DA2128':'#2778AE')+';'+
-        'cursor:pointer;display:flex;align-items:center;padding:0 4px;z-index:5;';
+        'height:'+EVH+'px;border-radius:2px;overflow:hidden;'+
+        'background:'+color+';cursor:pointer;display:flex;align-items:center;'+
+        'padding:0 3px;z-index:'+(cal==='school'?2:4)+';';
       var lbl2=mk('span');
       lbl2.style.cssText='font:700 7px/1 var(--fd);color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;';
       lbl2.textContent=seg.ev.title;
       bar.appendChild(lbl2);
       bar.title=seg.ev.title;
-      (function(occ){bar.addEventListener('click',function(e){e.stopPropagation();openDet(occ);});})(seg.occ);
+      if(cal!=='school'){
+        (function(occ){bar.addEventListener('click',function(e){e.stopPropagation();openDet(occ);});})(seg.occ);
+      }
       grid.appendChild(bar);
     });
-
     rowTopAccum+=rowH;
   }
-
-  // Scroll to today if it's within this program year
-  var todayMo=today.getMonth(),todayYr=today.getFullYear();
+  // Scroll to today if in program year
+  var tMo=today.getMonth(),tYr=today.getFullYear();
   for(var mi=0;mi<12;mi++){
     var md=moMeta[mi];
-    if(md.mo===todayMo&&md.yr2===todayYr){
+    if(md.mo===tMo&&md.yr2===tYr){
       var col=md.startDow+today.getDate()-1;
       var outer=document.getElementById('cal-outer');
       setTimeout(function(){outer.scrollLeft=Math.max(0,MOW+col*CW-outer.clientWidth/2);},80);
@@ -704,7 +711,43 @@ function renderSidebar(){
   all.sort(function(a,b){return a.date-b.date;});
   rFeed('feed-t',all.filter(function(o){return o.ev.calendar==='troop114';}),'t');
   rFeed('feed-c',all.filter(function(o){return o.ev.calendar==='crew22';}),'c');
+  // School calendar upcoming events from HOLS
+  var schoolItems=[];
+  var d=new Date(today);
+  while(d<=end){
+    var k=df(d),h=S.hols[k];
+    if(h){
+      var lbl=h.type==='holiday'?'School Holiday':h.type==='no-school'?'No School':'School Event';
+      schoolItems.push({ev:{id:'sch-'+k,calendar:'school',title:lbl},date:new Date(d),allDay:true});
+    }
+    d=da(d,1);
+  }
+  rFeedSchool('feed-s',schoolItems);
 }
+function rFeedSchool(id,items){
+  var el=document.getElementById(id);if(!el)return;el.innerHTML='';
+  if(!items.length){el.innerHTML='<div class="fc-mt">No ACPS events in next 60 days.</div>';return;}
+  var groups=[];
+  items.forEach(function(item){
+    if(!groups.length||Math.round((item.date-groups[groups.length-1].end)/86400000)>1){
+      groups.push({start:new Date(item.date),end:new Date(item.date),title:item.ev.title});
+    } else { groups[groups.length-1].end=new Date(item.date); }
+  });
+  groups.forEach(function(g){
+    var c=mk('div','fc s');
+    var bdg=mk('div','bdg');
+    var bmo=mk('div','bmo');bmo.textContent=MS[g.start.getMonth()];bdg.appendChild(bmo);
+    var bdy=mk('div','bdy');bdy.textContent=g.start.getDate();bdg.appendChild(bdy);
+    c.appendChild(bdg);
+    var ftt=mk('div','ftt');
+    var range=g.title;
+    if(g.end-g.start>0)range+=' – '+MS[g.end.getMonth()]+' '+g.end.getDate();
+    ftt.textContent=range;c.appendChild(ftt);
+    var fmt=mk('div','fmt');fmt.textContent='ACPS School Calendar';c.appendChild(fmt);
+    el.appendChild(c);
+  });
+}
+
 function rFeed(id,occs,cls){
   var el=document.getElementById(id);el.innerHTML='';
   if(!occs.length){el.innerHTML='<div class="fc-mt">No events in next 60 days.</div>';return;}
