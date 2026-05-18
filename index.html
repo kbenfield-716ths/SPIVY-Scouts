@@ -546,7 +546,7 @@ const HOLS = [{"date":"2026-07-03","type":"holiday"},{"date":"2026-08-12","type"
 /* DATA:END ─────────────────────────────────────────────────────── */
 
 /* ── CONSTANTS ── */
-var CW = 38, CH = 60, EVH = 16, MOW = 52, HDRH = 28;
+var CW = 38, CH = 60, EVH = 16, MOW = 52, HDRH = 28; // CH/EVH overridden dynamically in renderYear
 var MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MNS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 var MS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -646,11 +646,18 @@ function renderYear(){
   var maxEndCol=0;
   for(var mi=0;mi<12;mi++) maxEndCol=Math.max(maxEndCol,moMeta[mi].startDow+moMeta[mi].dim-1);
   var NC=Math.ceil((maxEndCol+1)/7)*7;
-  // Fill available width — recomputed each render + on resize
+  // Dynamic CW: fill width, min 44px, allow horizontal scroll
   var _outerEl=document.getElementById('cal-outer');
-  var _availW=(_outerEl&&_outerEl.clientWidth>200)?_outerEl.clientWidth:(Math.min(window.innerWidth,1800)-44);
-  // Minimum 44px per cell for readability; expand to fill wider screens; scroll is fine
+  var _availW=(_outerEl&&_outerEl.clientWidth>200)?_outerEl.clientWidth:(window.innerWidth-44);
   var CW=Math.max(44,Math.floor((_availW-MOW)/NC));
+  // Dynamic CH: shrink/grow so all 12 months always fit without vertical scroll
+  var _brandEl=document.querySelector('.brand');
+  var _legEl=document.querySelector('.legend');
+  var _brandH=_brandEl?(_brandEl.offsetHeight+16):72;
+  var _legH=_legEl?(_legEl.offsetHeight+12):50;
+  var _availH=window.innerHeight-_brandH-_legH-32;
+  var CH=Math.max(36,Math.floor((_availH-HDRH)/12));
+  var EVH=Math.max(10,Math.round(CH*0.22));
 
   var rs=new Date(ys,6,1),re=new Date(ys+1,5,30),allOccs=[];
   for(var i=0;i<S.events.length;i++) allOccs=allOccs.concat(expand(S.events[i],rs,re));
@@ -826,8 +833,18 @@ function renderSidebar(){
   var today=ds(new Date()),end=da(today,60),all=[];
   for(var i=0;i<S.events.length;i++)all=all.concat(expand(S.events[i],today,end));
   all.sort(function(a,b){return a.date-b.date;});
-  rFeed('feed-t',all.filter(function(o){return o.ev.calendar==='troop114';}),'t');
-  rFeed('feed-c',all.filter(function(o){return o.ev.calendar==='crew22';}),'c');
+  // Deduplicate: multi-day single events (allDay + endDate, no recurrence) show once
+  var _seen={};
+  var deduped=all.filter(function(o){
+    var ev=o.ev;
+    if(ev.allDay&&ev.endDate&&ev.startDate!==ev.endDate&&!ev.recurrence){
+      if(_seen[ev.id])return false;
+      _seen[ev.id]=true;
+    }
+    return true;
+  });
+  rFeed('feed-t',deduped.filter(function(o){return o.ev.calendar==='troop114';}),'t');
+  rFeed('feed-c',deduped.filter(function(o){return o.ev.calendar==='crew22';}),'c');
   // School calendar upcoming events from HOLS
   var schoolItems=[];
   var d=new Date(today);
@@ -877,7 +894,11 @@ function rFeed(id,occs,cls){
     var ftt=mk('div','ftt');ftt.textContent=o.ev.title;c.appendChild(ftt);
     var fmt=mk('div','fmt');
     var tx='';
-    if(o.allDay)tx='All day';else if(o.ev.startTime)tx=ft(o.ev.startTime);
+    // Show date range for multi-day events
+    if(o.ev.allDay&&o.ev.endDate&&o.ev.startDate!==o.ev.endDate&&!o.ev.recurrence){
+      var _ed=di(o.ev.endDate);
+      tx=MS[o.date.getMonth()]+' '+o.date.getDate()+' – '+MS[_ed.getMonth()]+' '+_ed.getDate();
+    } else if(o.allDay){tx='All day';}else if(o.ev.startTime){tx=ft(o.ev.startTime);}
     if(o.ev.location)tx+=(tx?' · ':'')+o.ev.location;
     fmt.textContent=tx;c.appendChild(fmt);
     (function(occ){c.addEventListener('click',function(){openDet(occ);});})(o);
