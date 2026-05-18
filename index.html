@@ -200,7 +200,7 @@ body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-w
 .mf{display:flex;gap:8px;}
 .mfl{font:900 8px/1 var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);width:58px;flex-shrink:0;padding-top:2px;}
 .mfv{font-size:12px;color:var(--ink);line-height:1.5;flex:1;}
-.mft{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px 16px;border-top:1px solid var(--line);}
+.mft{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px 16px;border-top:1px solid var(--line);align-items:center;}
 .mb{appearance:none;border:0;padding:7px 12px;border-radius:5px;font:800 10px/1 var(--fd);
   letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;
   display:inline-flex;align-items:center;gap:4px;transition:transform 80ms;}
@@ -590,6 +590,28 @@ function saveEv(ev){
   }
   loadData();renderYear();renderSidebar();toast('Event saved');
 }
+function delOneOcc(id,dateStr){
+  // Add this specific date to the event's exceptDates
+  var ev=S.events.find(function(e){return e.id===id;});
+  if(!ev)return;
+  var modified=JSON.parse(JSON.stringify(ev));
+  modified.exceptDates=(modified.exceptDates||[]);
+  if(!modified.exceptDates.includes(dateStr))modified.exceptDates.push(dateStr);
+  var isBase=BASE.events.some(function(e){return e.id===id;});
+  var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
+  if(isBase){
+    // Hide the base event and save a modified copy in user events
+    var del=JSON.parse(localStorage.getItem('sc_del')||'[]');
+    if(!del.includes(id)){del.push(id);localStorage.setItem('sc_del',JSON.stringify(del));}
+    var idx=ue.findIndex(function(e){return e.id===id;});
+    if(idx>=0)ue[idx]=modified;else ue.push(modified);
+  } else {
+    var idx=ue.findIndex(function(e){return e.id===id;});
+    if(idx>=0)ue[idx]=modified;
+  }
+  localStorage.setItem('sc_ev',JSON.stringify(ue));
+  loadData();renderYear();renderSidebar();closeDet();toast('Occurrence removed');
+}
 function delEv(id){
   var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
   localStorage.setItem('sc_ev',JSON.stringify(ue.filter(function(e){return e.id!==id;})));
@@ -907,6 +929,32 @@ function rFeed(id,occs,cls){
 }
 
 /* ── DETAIL MODAL ── */
+function showDelConfirm(ev,occ){
+  var foot=document.getElementById('m-foot');
+  foot.innerHTML='';
+  // Label
+  var msg=mk('div');
+  msg.style.cssText='font:600 12px/1.4 var(--fb);color:var(--ink-mid);flex:1;align-self:center;';
+  msg.textContent='Delete “'+ev.title+'”?';
+  foot.appendChild(msg);
+  if(ev.recurrence){
+    // Recurring: offer "this date only" vs "all occurrences"
+    var b1=mk('button','mb sec');b1.type='button';b1.textContent='This date only';
+    b1.addEventListener('click',function(){delOneOcc(ev.id,df(occ.date));});
+    foot.appendChild(b1);
+    var b2=mk('button','mb del');b2.type='button';b2.textContent='All occurrences';
+    b2.addEventListener('click',function(){delEv(ev.id);});
+    foot.appendChild(b2);
+  } else {
+    // Single or multi-day: just confirm
+    var b1=mk('button','mb del');b1.type='button';b1.textContent='Yes, delete';
+    b1.addEventListener('click',function(){delEv(ev.id);});
+    foot.appendChild(b1);
+  }
+  var bcan=mk('button','mb sec');bcan.type='button';bcan.textContent='Cancel';
+  bcan.addEventListener('click',function(){openDet(occ);});
+  foot.appendChild(bcan);
+}
 function openDet(occ){
   var ev=occ.ev,mdl=document.getElementById('mdl'),bg=document.getElementById('mbg');
   mdl.className='mdl '+(ev.calendar==='troop114'?'t':ev.calendar==='crew22'?'c':'s');
@@ -937,7 +985,10 @@ function openDet(occ){
     var ed=mk('button','mb sec');ed.type='button';ed.textContent='Edit';
     ed.addEventListener('click',function(){closeDet();openEd(ev);});foot.appendChild(ed);
   var delbtn=mk('button','mb del');delbtn.type='button';delbtn.textContent='Delete';
-  delbtn.addEventListener('click',function(){if(confirm('Delete "'+ev.title+'"?'))delEv(ev.id);});foot.appendChild(delbtn);
+  (function(capturedEv,capturedOcc){
+    delbtn.addEventListener('click',function(){showDelConfirm(capturedEv,capturedOcc);});
+  })(ev,occ);
+  foot.appendChild(delbtn);
   } // end else (non-school)
   // Notes
   var _notes=JSON.parse(localStorage.getItem('sc_notes')||'{}');
