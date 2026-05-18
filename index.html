@@ -34,14 +34,14 @@
   --fb:"Nunito Sans",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
 /* ── PAGE ── */
-.page{max-width:1800px;margin:0 auto;padding:20px 20px 60px;}
+.page{padding:12px 16px 24px;}
 
 /* ── HEADER ── */
 .brand{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
-  padding-bottom:14px;margin-bottom:16px;border-bottom:2px solid var(--ink);}
+  padding-bottom:10px;margin-bottom:12px;border-bottom:1.5px solid #D4D0C8;}
 .bmark{display:flex;align-items:center;gap:10px;}
 .compass{width:44px;height:44px;flex-shrink:0;}
 .btitle{font:900 22px/1 var(--fd);letter-spacing:-.02em;}
@@ -72,12 +72,10 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 .main{display:flex;gap:0;align-items:flex-start;}
 
 /* ── CALENDAR COLUMN ── */
-.cal-col{flex:1;min-width:0;overflow-x:auto;border-radius:10px 0 0 10px;
-  border:1px solid var(--line);border-radius:10px;background:var(--white);
-  box-shadow:var(--s-sm);}
+.cal-col{flex:1;min-width:0;overflow-x:auto;}
 
 /* calendar inner — width set by JS */
-.cal-inner{position:relative;}
+.cal-inner{position:relative;border:1.5px solid #D4D0C8;border-radius:8px;overflow:hidden;}
 
 /* header row */
 .cal-hdr{display:flex;position:sticky;top:0;z-index:20;background:var(--white);
@@ -126,7 +124,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 .ev-bar:hover{filter:brightness(.85);transform:scaleY(1.2);z-index:15;}
 .ev-bar.t{background:var(--red);}
 .ev-bar.c{background:var(--blue);}
-.ev-lbl{font:700 7px/1 var(--fd);color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
+.ev-lbl{font:700 10px/1 var(--fd);color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;}
 
 /* events spacer row inside each month row */
 .ev-space{flex-shrink:0;}
@@ -188,13 +186,13 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
   box-shadow:var(--s-lg);max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
   animation:pi 160ms cubic-bezier(.2,.8,.3,1);position:relative;}
 .mbar{height:4px;border-radius:12px 12px 0 0;}
-.mdl.t .mbar{background:var(--red);}.mdl.c .mbar{background:var(--blue);}
+.mdl.t .mbar{background:var(--red);}.mdl.c .mbar{background:var(--blue);}.mdl.s .mbar{background:#16A34A;}
 .mclose{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;
   border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:var(--ink-mid);z-index:2;}
 .mclose:hover{background:#0001;}
 .mhd{padding:12px 18px 10px;border-bottom:1px solid var(--line);}
 .mtag{font:900 8px/1 var(--fd);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
-.mdl.t .mtag{color:var(--red);}.mdl.c .mtag{color:var(--blue);}
+.mdl.t .mtag{color:var(--red);}.mdl.c .mtag{color:var(--blue);}.mdl.s .mtag{color:#16A34A;}
 .mtag .pip{width:6px;height:6px;border-radius:2px;background:currentColor;}
 .mt{font:900 19px/1.15 var(--fd);letter-spacing:-.01em;margin-bottom:2px;}
 .mwhen{font-size:12px;color:var(--ink-mid);font-weight:600;}
@@ -296,6 +294,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
+      <button class="hbtn sch-add" id="add-sch-btn" title="Add ACPS school event"><span class="pip" style="background:#16A34A"></span>ACPS Event</button>
       <button class="hbtn add" id="add-btn">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add Event
@@ -313,7 +312,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
   <!-- MAIN -->
   <div class="main">
     <!-- CALENDAR -->
-    <div class="cal-col" id="cal-outer" style="overflow-x:auto;flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;background:white;box-shadow:var(--s-sm);">
+    <div class="cal-col" id="cal-outer" style="overflow-x:auto;flex:1;min-width:0;">
       <div id="cal-inner">
         <div id="cal-grid"></div>
       </div>
@@ -440,16 +439,114 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 
 <div class="toast" id="toast"></div>
 
+<!-- SCHOOL EVENT EDITOR -->
+<div class="ebg" id="sebg" aria-hidden="true" role="dialog">
+  <div class="emdl">
+    <div class="ehd">
+      <div class="ehtitle" style="color:#16A34A">ACPS School Event</div>
+      <button class="ecls" id="secls" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="efrm">
+      <div class="fg">
+        <label>Type</label>
+        <select id="se-type">
+          <option value="holiday">School Holiday</option>
+          <option value="no-school">No School</option>
+          <option value="school-event">School Event</option>
+        </select>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Start Date</label><input type="date" id="se-sd"/></div>
+        <div class="fg"><label>End Date <span class="opt">(optional)</span></label><input type="date" id="se-ed"/></div>
+      </div>
+      <div class="fg"><label>Label <span class="opt">(optional)</span></label><input type="text" id="se-title" placeholder="e.g. Winter Break"/></div>
+      <input type="hidden" id="se-orig"/>
+    </div>
+    <div class="efoot">
+      <button class="ebtn can" id="se-can">Cancel</button>
+      <button class="ebtn pri" style="background:#16A34A" id="se-save">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ─────────────────────────────────────────────────────────────────
    EMBEDDED DATA  — run: node scripts/generate-ics.mjs  to refresh
    DATA:START */
-const BASE = {"calendars":{"troop114":{"name":"Troop 114","color":"#DA2128","icsFilename":"troop114.ics"},"crew22":{"name":"Crew 22","color":"#2778AE","icsFilename":"crew22.ics"}},"events":[{"id":"jamboree-2026","calendar":"troop114","title":"National Scout Jamboree","location":"Summit Bechtel Reserve, WV","startDate":"2026-07-22","endDate":"2026-07-31","allDay":true,"description":"2026 National Scout Jamboree — ELEVATE. VAHC Contingent.","link":"https://summit.scouting.org/national-scout-jamboree/"}]};
+const BASE = {"calendars":{"troop114":{"name":"Troop 114","color":"#DA2128","icsFilename":"troop114.ics"},"crew22":{"name":"Crew 22","color":"#2778AE","icsFilename":"crew22.ics"}},"events":[{"id": "jamboree-2026", "calendar": "troop114", "title": "National Scout Jamboree", "location": "Summit Bechtel Reserve, WV", "startDate": "2026-07-22", "endDate": "2026-07-31", "allDay": true, "description": "2026 National Scout Jamboree \u2013 ELEVATE. VAHC Contingent.", "link": "https://summit.scouting.org/national-scout-jamboree/"},
+{"id": "hist-2025-08-08-oa-august-fellowship", "calendar": "troop114", "title": "OA: August Fellowship", "startDate": "2025-08-08", "allDay": true, "endDate": "2025-08-10", "location": "Camp Shenandoah"},
+{"id": "hist-2025-08-18-troop-meeting-welcome-back", "calendar": "troop114", "title": "Troop Meeting - Welcome Back", "startDate": "2025-08-18", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-08-22-plc-annual-planning", "calendar": "troop114", "title": "PLC - Annual Planning", "startDate": "2025-08-22", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-08-25-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2025-08-25", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-09-01-troop-meeting-labor-day", "calendar": "troop114", "title": "Troop Meeting (Labor Day)", "startDate": "2025-09-01", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-09-08-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2025-09-08", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-09-13-aqua-terra-merit-badges", "calendar": "troop114", "title": "Aqua+Terra - Merit Badges", "startDate": "2025-09-13", "allDay": true, "endDate": "2025-09-14", "location": "Camp Shenandoah"},
+{"id": "hist-2025-09-15-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2025-09-15", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-09-20-priest-backpacking", "calendar": "troop114", "title": "Priest Backpacking", "startDate": "2025-09-20", "allDay": true, "endDate": "2025-09-21", "location": "Priest Wilderness"},
+{"id": "hist-2025-09-22-plc", "calendar": "troop114", "title": "PLC", "startDate": "2025-09-22", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-09-29-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2025-09-29", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-10-03-apple-harvest-camporee", "calendar": "troop114", "title": "Apple Harvest Camporee", "startDate": "2025-10-03", "allDay": true, "endDate": "2025-10-05", "location": "Camp Shenandoah"},
+{"id": "hist-2025-10-06-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2025-10-06", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-10-10-oa-lodge-retreat", "calendar": "troop114", "title": "OA: Lodge Retreat", "startDate": "2025-10-10", "allDay": true, "endDate": "2025-10-12", "location": "Camp Shenandoah"},
+{"id": "hist-2025-10-13-troop-meeting-no-school-acps", "calendar": "troop114", "title": "Troop Meeting (No School ACPS)", "startDate": "2025-10-13", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-10-20-plc", "calendar": "troop114", "title": "PLC", "startDate": "2025-10-20", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-10-27-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2025-10-27", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-11-01-oa-one-day-of-service-all-sco", "calendar": "troop114", "title": "OA: One Day of Service (all scouts welcome)", "startDate": "2025-11-01", "allDay": true},
+{"id": "hist-2025-11-03-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2025-11-03", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-11-08-ruck-the-ridge", "calendar": "troop114", "title": "Ruck the Ridge", "startDate": "2025-11-08", "allDay": true, "endDate": "2025-11-09", "location": "Blue Ridge School"},
+{"id": "hist-2025-11-10-troop-meeting-scouting-for-fo", "calendar": "troop114", "title": "Troop Meeting (Scouting for Food Bags Out)", "startDate": "2025-11-10", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-11-15-merit-badge-university-mounta", "calendar": "troop114", "title": "Merit Badge University (Mountain Valley district)", "startDate": "2025-11-15", "allDay": true, "location": "Blue Ridge Community College"},
+{"id": "hist-2025-11-17-plc-collecting-scouting-for-f", "calendar": "troop114", "title": "PLC (Collecting Scouting for Food Bags)", "startDate": "2025-11-17", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-11-22-tree-unloading", "calendar": "troop114", "title": "Tree Unloading", "startDate": "2025-11-22", "allDay": true},
+{"id": "hist-2025-11-24-no-meeting-thanksgiving-break", "calendar": "troop114", "title": "No Meeting - Thanksgiving Break", "startDate": "2025-11-24", "allDay": true},
+{"id": "hist-2025-11-28-tree-lot-set-up-sales-begin", "calendar": "troop114", "title": "Tree Lot Set Up & Sales Begin", "startDate": "2025-11-28", "allDay": true, "location": "Crozet Market parking lot"},
+{"id": "hist-2025-12-01-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2025-12-01", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-12-08-troop-meeting-coh", "calendar": "troop114", "title": "Troop Meeting - COH", "startDate": "2025-12-08", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-12-13-grizzle-farm", "calendar": "troop114", "title": "Grizzle Farm", "startDate": "2025-12-13", "allDay": true, "endDate": "2025-12-14", "location": "Grizzle Farm"},
+{"id": "hist-2025-12-15-plc", "calendar": "troop114", "title": "PLC?", "startDate": "2025-12-15", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2025-12-22-no-meeting-holiday-break", "calendar": "troop114", "title": "No Meeting - Holiday Break", "startDate": "2025-12-22", "allDay": true},
+{"id": "hist-2026-01-05-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2026-01-05", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-01-12-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-01-12", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-01-17-caving-day-trip", "calendar": "troop114", "title": "Caving Day Trip", "startDate": "2026-01-17", "allDay": true, "location": "Near Bridgewater"},
+{"id": "hist-2026-01-19-plc-no-school-acps", "calendar": "troop114", "title": "PLC (No School ACPS)", "startDate": "2026-01-19", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-01-24-merit-badge-university-weeken", "calendar": "troop114", "title": "Merit Badge University (weekend 1)", "startDate": "2026-01-24", "allDay": true, "location": "Aldersgate United Methodist Church"},
+{"id": "hist-2026-01-26-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-01-26", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-01-31-merit-badge-university-weeken", "calendar": "troop114", "title": "Merit Badge University (weekend 2)", "startDate": "2026-01-31", "allDay": true, "location": "Aldersgate United Methodist Church"},
+{"id": "hist-2026-02-01-scout-sunday", "calendar": "troop114", "title": "Scout Sunday", "startDate": "2026-02-01", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-02-02-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2026-02-02", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-02-09-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-02-09", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-02-16-plc", "calendar": "troop114", "title": "PLC", "startDate": "2026-02-16", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-02-23-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-02-23", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-02-28-climbing-lock-in", "calendar": "troop114", "title": "Climbing Lock-in", "startDate": "2026-02-28", "allDay": true, "endDate": "2026-03-01", "location": "State Climb - Culpeper"},
+{"id": "hist-2026-03-02-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2026-03-02", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-03-09-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-03-09", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-03-16-plc", "calendar": "troop114", "title": "PLC", "startDate": "2026-03-16", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-03-14-elliot-knob-backpacking-exper", "calendar": "troop114", "title": "Elliot Knob Backpacking (experienced scouts)", "startDate": "2026-03-14", "allDay": true, "endDate": "2026-03-15", "location": "Elliot Knob"},
+{"id": "hist-2026-03-20-false-cape", "calendar": "troop114", "title": "False Cape", "startDate": "2026-03-20", "allDay": true, "endDate": "2026-03-22", "location": "False Cape State Park"},
+{"id": "hist-2026-03-20-oa-spring-fellowship", "calendar": "troop114", "title": "OA: Spring Fellowship", "startDate": "2026-03-20", "allDay": true, "endDate": "2026-03-22", "location": "Camp Shenandoah"},
+{"id": "hist-2026-03-23-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-03-23", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-04-06-no-meeting-spring-break", "calendar": "troop114", "title": "No Meeting - Spring Break", "startDate": "2026-04-06", "allDay": true},
+{"id": "hist-2026-04-13-plc", "calendar": "troop114", "title": "PLC", "startDate": "2026-04-13", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-04-17-woods-with-merit-camporee", "calendar": "troop114", "title": "Woods WIth Merit Camporee", "startDate": "2026-04-17", "allDay": true, "endDate": "2026-04-19", "location": "Palmyra, VA"},
+{"id": "hist-2026-04-20-advancement-meeting", "calendar": "troop114", "title": "Advancement Meeting", "startDate": "2026-04-20", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-04-27-troop-meeting-coh-and-celebra", "calendar": "troop114", "title": "Troop Meeting - CoH and Celebration", "startDate": "2026-04-27", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-05-04-plc", "calendar": "troop114", "title": "PLC", "startDate": "2026-05-04", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-05-11-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-05-11", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-05-15-fishing-trip", "calendar": "troop114", "title": "Fishing Trip", "startDate": "2026-05-15", "allDay": true, "endDate": "2026-05-17", "location": "Goshen Scout Reservation"},
+{"id": "hist-2026-05-18-advancement-meeting-smcs-and-", "calendar": "troop114", "title": "Advancement Meeting (SMCs and BoRs)", "startDate": "2026-05-18", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-05-25-no-meeting-memorial-day", "calendar": "troop114", "title": "No Meeting - Memorial Day", "startDate": "2026-05-25", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-05-29-oa-june-fellowship", "calendar": "troop114", "title": "OA: \"June\" Fellowship", "startDate": "2026-05-29", "allDay": true, "endDate": "2026-05-31", "location": "Camp Shenandoah"},
+{"id": "hist-2026-06-05-whitewater-rafting", "calendar": "troop114", "title": "Whitewater Rafting", "startDate": "2026-06-05", "allDay": true, "endDate": "2026-06-07", "location": "West Virginia"},
+{"id": "hist-2026-06-08-troop-meeting", "calendar": "troop114", "title": "Troop Meeting", "startDate": "2026-06-08", "allDay": true, "location": "St. Paul's Ivy"},
+{"id": "hist-2026-06-21-summer-camp", "calendar": "troop114", "title": "Summer Camp", "startDate": "2026-06-21", "allDay": true, "endDate": "2026-06-27", "location": "Camp Raven Knob"},
+{"id": "hist-2025-08-07-oa-august-fellowship", "calendar": "troop114", "title": "OA: August Fellowship", "startDate": "2025-08-07", "allDay": true, "endDate": "2025-08-09", "location": "Camp Shenandoah"}]};
 const HOLS = [{"date":"2026-07-03","type":"holiday"},{"date":"2026-08-12","type":"school-event"},{"date":"2026-09-07","type":"holiday"},{"date":"2026-09-08","type":"no-school"},{"date":"2026-10-12","type":"no-school"},{"date":"2026-10-13","type":"no-school"},{"date":"2026-11-02","type":"no-school"},{"date":"2026-11-03","type":"no-school"},{"date":"2026-11-25","type":"holiday"},{"date":"2026-11-26","type":"holiday"},{"date":"2026-11-27","type":"holiday"},{"date":"2026-12-18","type":"no-school"},{"date":"2026-12-21","type":"holiday"},{"date":"2026-12-22","type":"holiday"},{"date":"2026-12-23","type":"holiday"},{"date":"2026-12-24","type":"holiday"},{"date":"2026-12-25","type":"holiday"},{"date":"2026-12-28","type":"holiday"},{"date":"2026-12-29","type":"holiday"},{"date":"2026-12-30","type":"holiday"},{"date":"2026-12-31","type":"holiday"},{"date":"2027-01-01","type":"holiday"},{"date":"2027-01-18","type":"holiday"},{"date":"2027-01-19","type":"no-school"},{"date":"2027-02-15","type":"no-school"},{"date":"2027-03-18","type":"no-school"},{"date":"2027-03-19","type":"no-school"},{"date":"2027-04-05","type":"holiday"},{"date":"2027-04-06","type":"holiday"},{"date":"2027-04-07","type":"holiday"},{"date":"2027-04-08","type":"holiday"},{"date":"2027-04-09","type":"holiday"},{"date":"2027-05-27","type":"school-event"},{"date":"2027-05-28","type":"no-school"},{"date":"2027-05-31","type":"holiday"},{"date":"2027-06-18","type":"holiday"}];
 /* DATA:END ─────────────────────────────────────────────────────── */
 
 /* ── CONSTANTS ── */
-var CW = 38, CH = 43, EVH = 12, MOW = 52, HDRH = 32;
+var CW = 38, CH = 60, EVH = 16, MOW = 52, HDRH = 28;
 var MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MNS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 var MS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -478,6 +575,9 @@ function loadData(){
   S.cals=Object.assign({school:{name:'ACPS School Calendar',color:'#16A34A'}},BASE.calendars);
   S.hols={};
   for(var i=0;i<HOLS.length;i++)S.hols[HOLS[i].date]=HOLS[i];
+  // Merge user-added/edited school events
+  var _uh=JSON.parse(localStorage.getItem('sc_uhols')||'{}');
+  Object.keys(_uh).forEach(function(k){S.hols[k]=_uh[k];});
 }
 function saveEv(ev){
   var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
@@ -534,8 +634,8 @@ function expand(ev,rs,re){
 /* ── RENDER YEAR ── */
 function renderYear(){
   var ys=S.yr;
-  document.getElementById('yr-lbl').innerHTML=ys+'\u20133'+(ys+1).toString().slice(-2)+' <small>Program Year</small>';
-  document.getElementById('py-lbl').textContent=ys+'\u2013'+(ys+1)+' Program Year';
+  document.getElementById('yr-lbl').innerHTML=ys+'\u2013'+(ys+1).toString().slice(-2)+' <small>Program Year</small>';
+  document.getElementById('py-lbl').textContent=(ys)+'\u2013'+((ys+1).toString().slice(-2))+' Program Year';
 
   var moMeta=[];
   for(var mi=0;mi<12;mi++){
@@ -549,7 +649,8 @@ function renderYear(){
   // Fill available width — recomputed each render + on resize
   var _outerEl=document.getElementById('cal-outer');
   var _availW=(_outerEl&&_outerEl.clientWidth>200)?_outerEl.clientWidth:(Math.min(window.innerWidth,1800)-44);
-  var CW=Math.max(22,Math.floor((_availW-MOW)/NC));
+  // Minimum 44px per cell for readability; expand to fill wider screens; scroll is fine
+  var CW=Math.max(44,Math.floor((_availW-MOW)/NC));
 
   var rs=new Date(ys,6,1),re=new Date(ys+1,5,30),allOccs=[];
   for(var i=0;i<S.events.length;i++) allOccs=allOccs.concat(expand(S.events[i],rs,re));
@@ -662,11 +763,15 @@ function renderYear(){
       var bg=isToday?'#18181B':(hol&&hol.type==='holiday')?'#FFF3A8':(hol&&hol.type==='no-school')?'#FFE2C0':(hol&&hol.type==='school-event')?'#D6E8FF':isW?'#EDEAE5':'white';
       var dc=mk('div');
       dc.style.cssText='height:'+CH+'px;background:'+bg+';border-right:'+BDR+';border-bottom:'+BDB+';position:relative;overflow:visible;';
-      var dn=mk('span');
-      // Date numbers float above event bars with a white backing so they stay readable
-      dn.style.cssText='position:absolute;top:3px;left:3px;font:700 9px/1 var(--fd);color:'+(isToday?'white':'#52525B')+';'+
-        'background:'+(isToday?'transparent':'rgba(255,255,255,.85)')+';border-radius:2px;padding:1px 2px;z-index:3;pointer-events:none;';
-      dn.textContent=p2(d);
+      var dn=mk('div');
+      dn.style.cssText='position:absolute;top:4px;left:4px;z-index:3;pointer-events:none;line-height:1;';
+      var dnNum=mk('span');
+      dnNum.style.cssText='display:block;font:700 11px/1 var(--fd);color:'+(isToday?'white':'#3F3F46')+';';
+      dnNum.textContent=p2(d);
+      var dnDay=mk('span');
+      dnDay.style.cssText='display:block;font:600 8px/1 var(--fb);color:'+(isToday?'rgba(255,255,255,.8)':'#A1A1AA')+';margin-top:2px;';
+      dnDay.textContent=WDA[dow];
+      dn.appendChild(dnNum);dn.appendChild(dnDay);
       dc.appendChild(dn);
       grid.appendChild(dc);
     }
@@ -694,7 +799,7 @@ function renderYear(){
         'background:'+color+';cursor:pointer;display:flex;align-items:center;'+
         'padding:0 3px;z-index:'+(cal==='school'?2:4)+';';
       var lbl2=mk('span');
-      lbl2.style.cssText='font:700 7px/1 var(--fd);color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;';
+      lbl2.style.cssText='font:700 10px/1 var(--fd);color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;';
       lbl2.textContent=seg.ev.title;
       bar.appendChild(lbl2);
       bar.title=seg.ev.title;
@@ -783,8 +888,9 @@ function rFeed(id,occs,cls){
 /* ── DETAIL MODAL ── */
 function openDet(occ){
   var ev=occ.ev,mdl=document.getElementById('mdl'),bg=document.getElementById('mbg');
-  mdl.className='mdl '+(ev.calendar==='troop114'?'t':'c');
-  document.getElementById('m-cal').textContent=S.cals[ev.calendar].name;
+  mdl.className='mdl '+(ev.calendar==='troop114'?'t':ev.calendar==='crew22'?'c':'s');
+  var _calInfo=S.cals[ev.calendar]||{name:ev.calendar,color:'#16A34A'};
+  document.getElementById('m-cal').textContent=_calInfo.name;
   document.getElementById('m-title').textContent=ev.title;
   var when='';
   if(ev.endDate&&ev.startDate!==ev.endDate)when=fd(di(ev.startDate))+' \u2192 '+fd(di(ev.endDate));
@@ -798,10 +904,20 @@ function openDet(occ){
   if(ev.link){var a=mk('a','mb pri');a.href=ev.link;a.target='_blank';a.rel='noopener';a.textContent='Info & Sign-Up';foot.appendChild(a);}
   var dl=mk('button','mb sec');dl.type='button';dl.textContent='Add to My Calendar';
   dl.addEventListener('click',function(){dlICS(occ);});foot.appendChild(dl);
-  var ed=mk('button','mb sec');ed.type='button';ed.textContent='Edit';
-  ed.addEventListener('click',function(){closeDet();openEd(ev);});foot.appendChild(ed);
+  if(ev.calendar==='school'){
+    var sed=mk('button','mb sec');sed.type='button';sed.textContent='Edit';
+    (function(eid){sed.addEventListener('click',function(){closeDet();
+      var d=eid.replace('sch-','');openSchEd(d,S.hols[d]?S.hols[d].type:'holiday');});})(ev.id);
+    foot.appendChild(sed);
+    var sdel=mk('button','mb del');sdel.type='button';sdel.textContent='Remove';
+    (function(eid){sdel.addEventListener('click',function(){delSchEv(eid.replace('sch-',''));});})(ev.id);
+    foot.appendChild(sdel);
+  } else {
+    var ed=mk('button','mb sec');ed.type='button';ed.textContent='Edit';
+    ed.addEventListener('click',function(){closeDet();openEd(ev);});foot.appendChild(ed);
   var delbtn=mk('button','mb del');delbtn.type='button';delbtn.textContent='Delete';
   delbtn.addEventListener('click',function(){if(confirm('Delete "'+ev.title+'"?'))delEv(ev.id);});foot.appendChild(delbtn);
+  } // end else (non-school)
   // Notes
   var _notes=JSON.parse(localStorage.getItem('sc_notes')||'{}');
   var _notesEl=document.getElementById('m-notes');
@@ -933,12 +1049,63 @@ function toast(msg){
   setTimeout(function(){t.classList.remove('show');},2800);
 }
 
+/* ── SCHOOL EDITOR ── */
+function openSchEd(dateStr,type){
+  document.getElementById('se-sd').value=dateStr||'';
+  document.getElementById('se-ed').value='';
+  document.getElementById('se-type').value=type||'no-school';
+  document.getElementById('se-title').value='';
+  document.getElementById('se-orig').value=dateStr||'';
+  document.getElementById('sebg').classList.add('open');
+  document.getElementById('sebg').setAttribute('aria-hidden','false');
+}
+function closeSchEd(){
+  document.getElementById('sebg').classList.remove('open');
+  document.getElementById('sebg').setAttribute('aria-hidden','true');
+}
+function saveSchEv(){
+  var sd=document.getElementById('se-sd').value;
+  if(!sd){alert('Please enter a start date.');return;}
+  var ed=document.getElementById('se-ed').value||sd;
+  var type=document.getElementById('se-type').value;
+  var title=document.getElementById('se-title').value.trim();
+  var orig=document.getElementById('se-orig').value;
+  // Load user-edited hols
+  var uHols=JSON.parse(localStorage.getItem('sc_uhols')||'{}');
+  // Remove original if editing
+  if(orig&&orig!==sd) delete uHols[orig];
+  // Add all dates in range
+  var d=new Date(sd.replace(/-/g,'/'));
+  var end=new Date(ed.replace(/-/g,'/'));
+  while(d<=end){
+    var k=df(d);
+    uHols[k]={type:type,label:title||null};
+    d=da(d,1);
+  }
+  localStorage.setItem('sc_uhols',JSON.stringify(uHols));
+  loadData();renderYear();renderSidebar();
+  closeSchEd();toast('School event saved');
+}
+function delSchEv(dateStr){
+  if(!confirm('Remove this school event?'))return;
+  var uHols=JSON.parse(localStorage.getItem('sc_uhols')||'{}');
+  delete uHols[dateStr];
+  localStorage.setItem('sc_uhols',JSON.stringify(uHols));
+  loadData();renderYear();renderSidebar();
+  closeDet();toast('School event removed');
+}
+
 /* ── WIRE ── */
 document.getElementById('prev-yr').addEventListener('click',function(){S.yr--;renderYear();renderSidebar();});
 document.getElementById('next-yr').addEventListener('click',function(){S.yr++;renderYear();renderSidebar();});
 document.getElementById('add-btn').addEventListener('click',function(){openEd(null);});
 document.getElementById('exp-btn').addEventListener('click',exportJSON);
 document.getElementById('mclose').addEventListener('click',closeDet);
+document.getElementById('add-sch-btn').addEventListener('click',function(){openSchEd('','no-school');});
+document.getElementById('secls').addEventListener('click',closeSchEd);
+document.getElementById('se-can').addEventListener('click',closeSchEd);
+document.getElementById('se-save').addEventListener('click',saveSchEv);
+document.getElementById('sebg').addEventListener('click',function(e){if(e.target.id==='sebg')closeSchEd();});
 document.getElementById('m-notes').addEventListener('blur',function(){
   var notes=JSON.parse(localStorage.getItem('sc_notes')||'{}');
   var v=this.value.trim();
