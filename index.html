@@ -208,6 +208,8 @@ body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-w
 .mdl.t .mb.pri{background:var(--red);color:white;}.mdl.c .mb.pri{background:var(--blue);color:white;}
 .mb.sec{background:white;color:var(--ink);border:1px solid var(--line);}
 .mb.del{background:white;color:#c00;border:1px solid #c00;}
+.mb.th{background:#005596;color:white;}
+.mb.th svg{flex-shrink:0;}
 .mnotes{padding:4px 18px 12px;border-top:1px solid var(--line);}
 .mnotes textarea{width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:6px;
   font:600 12px/1.5 var(--fb);color:var(--ink);resize:vertical;min-height:68px;
@@ -982,7 +984,14 @@ function openDet(occ){
     (function(eid){sdel.addEventListener('click',function(){delSchEv(eid.replace('sch-',''));});})(ev.id);
     foot.appendChild(sdel);
   } else {
-    var ed=mk('button','mb sec');ed.type='button';ed.textContent='Edit';
+    // TroopHub button — opens in new window for attendance logging
+  var thbtn=mk('a','mb th');
+  thbtn.href='https://troophub.fly.dev';
+  thbtn.target='_blank';thbtn.rel='noopener noreferrer';
+  thbtn.style.cssText='text-decoration:none;';
+  thbtn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> TroopHub';
+  foot.appendChild(thbtn);
+  var ed=mk('button','mb sec');ed.type='button';ed.textContent='Edit';
     ed.addEventListener('click',function(){closeDet();openEd(ev);});foot.appendChild(ed);
   var delbtn=mk('button','mb del');delbtn.type='button';delbtn.textContent='Delete';
   (function(capturedEv,capturedOcc){
