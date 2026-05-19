@@ -286,7 +286,8 @@ body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-w
       </div>
     </div>
 
-    <div class="hright">
+    <div class="hright" style="gap:8px;align-items:center">
+      <span id="sync-dot" title="GitHub Sync not configured" style="width:8px;height:8px;border-radius:50%;background:#A1A1AA;flex-shrink:0;cursor:pointer;" onclick="openSettings()"></span>
       <div class="yr-nav">
         <button id="prev-yr" aria-label="Prev year">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -296,6 +297,7 @@ body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-w
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
+      <button class="hbtn exp" id="gh-settings-btn" title="GitHub Sync Settings" style="border:1.5px solid #238636;color:#238636;">⚙ Sync</button>
       <button class="hbtn sch-add" id="add-sch-btn" title="Add ACPS school event"><span class="pip" style="background:#16A34A"></span>ACPS Event</button>
       <button class="hbtn add" id="add-btn">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -440,6 +442,42 @@ body{font-family:var(--fb);background:white;color:var(--ink);min-height:100vh;-w
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- GITHUB SYNC SETTINGS -->
+<div class="ebg" id="ghbg" aria-hidden="true" role="dialog">
+  <div class="emdl" style="max-width:440px">
+    <div class="ehd">
+      <div class="ehtitle" style="color:#238636">⚙ GitHub Sync</div>
+      <button class="ecls" id="ghcls" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="efrm">
+      <div class="fg">
+        <label>GitHub Owner <span class="opt">(your username)</span></label>
+        <input type="text" id="gh-owner" placeholder="kbenfield-716ths"/>
+      </div>
+      <div class="fg">
+        <label>Repository Name</label>
+        <input type="text" id="gh-repo" placeholder="e.g. scout-calendar"/>
+      </div>
+      <div class="fg">
+        <label>Personal Access Token <span class="opt">(stored locally, never sent anywhere except GitHub)</span></label>
+        <input type="password" id="gh-token" placeholder="github_pat_..."/>
+      </div>
+      <div id="gh-status" style="font:600 12px/1.5 var(--fb);padding:6px 0;display:none"></div>
+      <p style="font:500 11px/1.5 var(--fb);color:var(--ink-soft);margin-top:-4px">
+        Create a <strong>fine-grained token</strong> at GitHub → Settings → Developer Settings → PATs → Fine-grained.<br>
+        Grant <strong>Contents: Read &amp; Write</strong> on this repo only.
+      </p>
+    </div>
+    <div class="efoot" style="gap:8px">
+      <button class="ebtn can" id="gh-can">Cancel</button>
+      <button class="ebtn" id="gh-test" style="background:white;color:#238636;border:1.5px solid #238636">Test Connection</button>
+      <button class="ebtn pri" id="gh-save" style="background:#238636">Save &amp; Sync</button>
+    </div>
+  </div>
+</div>
 
 <!-- SCHOOL EVENT EDITOR -->
 <div class="ebg" id="sebg" aria-hidden="true" role="dialog">
@@ -590,7 +628,7 @@ function saveEv(ev){
     var del=JSON.parse(localStorage.getItem('sc_del')||'[]');
     if(!del.includes(ev.id)){del.push(ev.id);localStorage.setItem('sc_del',JSON.stringify(del));}
   }
-  loadData();renderYear();renderSidebar();toast('Event saved');
+  loadData();renderYear();renderSidebar();syncToGitHub();toast('Event saved');
 }
 function delOneOcc(id,dateStr){
   // Add this specific date to the event's exceptDates
@@ -612,7 +650,7 @@ function delOneOcc(id,dateStr){
     if(idx>=0)ue[idx]=modified;
   }
   localStorage.setItem('sc_ev',JSON.stringify(ue));
-  loadData();renderYear();renderSidebar();closeDet();toast('Occurrence removed');
+  loadData();renderYear();renderSidebar();syncToGitHub();closeDet();toast('Occurrence removed');
 }
 function delEv(id){
   var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
@@ -621,7 +659,7 @@ function delEv(id){
     var del=JSON.parse(localStorage.getItem('sc_del')||'[]');
     if(!del.includes(id)){del.push(id);localStorage.setItem('sc_del',JSON.stringify(del));}
   }
-  loadData();renderYear();renderSidebar();closeDet();toast('Event deleted');
+  loadData();renderYear();renderSidebar();syncToGitHub();closeDet();toast('Event deleted');
 }
 
 /* ── RECURRENCE ── */
@@ -1130,6 +1168,120 @@ function toast(msg){
   setTimeout(function(){t.classList.remove('show');},2800);
 }
 
+/* ── GITHUB SYNC ── */
+var GH_OWNER=localStorage.getItem('sc_gh_owner')||'';
+var GH_REPO =localStorage.getItem('sc_gh_repo')||'';
+var GH_TOKEN=localStorage.getItem('sc_gh_token')||'';
+
+function ghHeaders(){
+  return {'Authorization':'token '+GH_TOKEN,'Content-Type':'application/json'};
+}
+function ghApiUrl(){
+  return 'https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/events.json';
+}
+function buildEventsJson(){
+  var del=new Set(JSON.parse(localStorage.getItem('sc_del')||'[]'));
+  var ue=JSON.parse(localStorage.getItem('sc_ev')||'[]');
+  var evts=BASE.events.filter(function(e){return !del.has(e.id);}).concat(ue);
+  return JSON.stringify({calendars:BASE.calendars,events:evts},null,2);
+}
+function toB64(str){
+  // UTF-8 safe base64 encode
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function syncToGitHub(){
+  if(!GH_TOKEN||!GH_REPO||!GH_OWNER)return; // not configured
+  var content=toB64(buildEventsJson());
+  // Get current SHA first, then PUT
+  fetch(ghApiUrl(),{headers:ghHeaders()})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      return fetch(ghApiUrl(),{
+        method:'PUT',
+        headers:ghHeaders(),
+        body:JSON.stringify({
+          message:'Calendar: update events [skip ci]',
+          content:content,
+          sha:d.sha
+        })
+      });
+    })
+    .then(function(r){
+      if(r.ok){setSyncStatus('synced');}
+      else{r.json().then(function(d){setSyncStatus('error',d.message);});}
+    })
+    .catch(function(e){setSyncStatus('error',e.message);});
+  setSyncStatus('syncing');
+}
+
+function loadFromGitHub(){
+  if(!GH_TOKEN||!GH_REPO||!GH_OWNER)return Promise.resolve(false);
+  var rawUrl='https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/main/events.json?t='+Date.now();
+  return fetch(rawUrl)
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){
+      if(!data||!data.events)return false;
+      // Replace BASE events with GitHub version (keeps user local overrides on top)
+      BASE.events=data.events;
+      if(data.calendars)BASE.calendars=data.calendars;
+      return true;
+    })
+    .catch(function(){return false;});
+}
+
+function setSyncStatus(state,msg){
+  var el=document.getElementById('sync-dot');
+  if(!el)return;
+  if(state==='synced'){el.title='Synced to GitHub';el.style.background='#238636';}
+  else if(state==='syncing'){el.title='Syncing…';el.style.background='#F59E0B';}
+  else if(state==='error'){el.title='Sync error: '+(msg||'');el.style.background='#c00';}
+  else{el.title='Not configured';el.style.background='#A1A1AA';}
+}
+
+function openSettings(){
+  document.getElementById('gh-owner').value=GH_OWNER;
+  document.getElementById('gh-repo').value=GH_REPO;
+  document.getElementById('gh-token').value=GH_TOKEN;
+  document.getElementById('gh-status').style.display='none';
+  document.getElementById('ghbg').classList.add('open');
+  document.getElementById('ghbg').setAttribute('aria-hidden','false');
+}
+function closeSettings(){
+  document.getElementById('ghbg').classList.remove('open');
+  document.getElementById('ghbg').setAttribute('aria-hidden','true');
+}
+function saveSettings(){
+  GH_OWNER=document.getElementById('gh-owner').value.trim();
+  GH_REPO=document.getElementById('gh-repo').value.trim();
+  GH_TOKEN=document.getElementById('gh-token').value.trim();
+  localStorage.setItem('sc_gh_owner',GH_OWNER);
+  localStorage.setItem('sc_gh_repo',GH_REPO);
+  localStorage.setItem('sc_gh_token',GH_TOKEN);
+  closeSettings();
+  // Immediately sync current data
+  loadFromGitHub().then(function(ok){
+    if(ok){loadData();renderYear();renderSidebar();}
+    syncToGitHub();
+  });
+}
+function testConnection(){
+  var owner=document.getElementById('gh-owner').value.trim();
+  var repo=document.getElementById('gh-repo').value.trim();
+  var token=document.getElementById('gh-token').value.trim();
+  var st=document.getElementById('gh-status');
+  st.style.display='block';st.style.color='#F59E0B';st.textContent='Testing…';
+  var url='https://api.github.com/repos/'+owner+'/'+repo+'/contents/events.json';
+  fetch(url,{headers:{'Authorization':'token '+token}})
+    .then(function(r){
+      if(r.ok){st.style.color='#238636';st.textContent='✓ Connected! events.json found.';}
+      else if(r.status===404){st.style.color='#c00';st.textContent='✗ events.json not found. Check repo name.';}
+      else if(r.status===401){st.style.color='#c00';st.textContent='✗ Unauthorized. Check your token.';}
+      else{st.style.color='#c00';st.textContent='✗ Error '+r.status;}
+    })
+    .catch(function(e){st.style.color='#c00';st.textContent='✗ '+e.message;});
+}
+
 /* ── SCHOOL EDITOR ── */
 function openSchEd(dateStr,type){
   document.getElementById('se-sd').value=dateStr||'';
@@ -1182,6 +1334,12 @@ document.getElementById('next-yr').addEventListener('click',function(){S.yr++;re
 document.getElementById('add-btn').addEventListener('click',function(){openEd(null);});
 document.getElementById('exp-btn').addEventListener('click',exportJSON);
 document.getElementById('mclose').addEventListener('click',closeDet);
+document.getElementById('gh-settings-btn').addEventListener('click',openSettings);
+document.getElementById('ghcls').addEventListener('click',closeSettings);
+document.getElementById('gh-can').addEventListener('click',closeSettings);
+document.getElementById('gh-save').addEventListener('click',saveSettings);
+document.getElementById('gh-test').addEventListener('click',testConnection);
+document.getElementById('ghbg').addEventListener('click',function(e){if(e.target.id==='ghbg')closeSettings();});
 document.getElementById('add-sch-btn').addEventListener('click',function(){openSchEd('','no-school');});
 document.getElementById('secls').addEventListener('click',closeSchEd);
 document.getElementById('se-can').addEventListener('click',closeSchEd);
@@ -1216,9 +1374,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDet();
 })();
 
 /* ── BOOT ── */
-loadData();
-renderYear();
-renderSidebar();
+// Boot: load hardcoded data first for instant render, then sync from GitHub
+loadData();renderYear();renderSidebar();
+setSyncStatus(GH_TOKEN&&GH_REPO&&GH_OWNER?'synced':'off');
+if(GH_TOKEN&&GH_REPO&&GH_OWNER){
+  loadFromGitHub().then(function(ok){
+    if(ok){loadData();renderYear();renderSidebar();}
+    setSyncStatus('synced');
+  }).catch(function(){setSyncStatus('error','Load failed');});
+}
 // Re-render on resize so CW stays fitted to the screen
 var _rzTimer;
 window.addEventListener('resize',function(){clearTimeout(_rzTimer);_rzTimer=setTimeout(renderYear,180);});
